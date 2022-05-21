@@ -4,6 +4,7 @@ import (
 	"douyin-Jacob/cmd/publish_api/global"
 	"douyin-Jacob/cmd/publish_api/handlers"
 	middlewares "douyin-Jacob/pkg/middleware"
+	"douyin-Jacob/pkg/tracer"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
@@ -26,7 +27,7 @@ func InitRouters() (c *gin.Engine) {
 
 
 func InitPublishRouter(Router *gin.RouterGroup)  {
-	Publish := Router.Group("/publish")
+	Publish := Router.Group("/publish").Use(tracer.Trace())
 	zap.S().Info("配置publish相关的url")
 	{
 		Publish.GET("/list", middlewares.JWTAuth(global.ServerConfig.JWTInfo.SigningKey),handlers.GetUserVideoList)

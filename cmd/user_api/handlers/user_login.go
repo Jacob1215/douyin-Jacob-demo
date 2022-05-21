@@ -29,7 +29,7 @@ func Login(c *gin.Context)  {
 	}
 
 	//查询用户存不存在
-	if userRsp,err  := global.UserSrvClient.GetUserInfoByName(context.Background(),&proto.DouyinUserRequest{
+	if userRsp,err  := global.UserSrvClient.GetUserInfoByName(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRequest{
 		Name: passwordLoginForm.UserName,
 	});err != nil {
 		if e, ok := status.FromError(err); ok {
@@ -43,7 +43,7 @@ func Login(c *gin.Context)  {
 		}
 	} else {
 		//查询了用户存不存在，现在去验证密码
-		if passRsp,passErr := global.UserSrvClient.UserLoginByName(context.Background(),&proto.DouyinUserLoginRequest{
+		if passRsp,passErr := global.UserSrvClient.UserLoginByName(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserLoginRequest{
 			Password: passwordLoginForm.PassWord,
 			EncryptedPassword: userRsp.User.Password,
 		}); passErr != nil {

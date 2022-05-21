@@ -4,6 +4,7 @@ import (
 	"douyin-Jacob/cmd/user_api/global"
 	"douyin-Jacob/cmd/user_api/handlers"
 	"douyin-Jacob/pkg/middleware"
+	"douyin-Jacob/pkg/tracer"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
@@ -25,7 +26,7 @@ func InitRouters() (c *gin.Engine) {
 }
 
 func InitUserRouter(Router *gin.RouterGroup)  {//注册用户相关的路由
-	UserRouter := Router.Group("/user")
+	UserRouter := Router.Group("/user").Use(tracer.Trace())
 	zap.S().Info("配置用户相关的url")
 	{
 		UserRouter.GET("/",middlewares.JWTAuth(global.ServerConfig.JWTInfo.SigningKey),

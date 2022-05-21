@@ -2,7 +2,9 @@ package api_init
 
 import (
 	"douyin-Jacob/cmd/user_api/global"
+	"douyin-Jacob/pkg/tracer/otgrpc"
 	"douyin-Jacob/proto/user"
+	"github.com/opentracing/opentracing-go"
 
 	"fmt"
 
@@ -22,6 +24,8 @@ func InitSrvConn()  {
 			global.ServerConfig.UserSrvInfo.Name),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),
+		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
+		//只需要就这样使用。设置全局的tracer。但是问题是找不到之前设置的parentSpan的。拿不到父子关系的。
 	)
 	if err != nil {
 		zap.S().Fatal("[InitSrvConn]连接【用户服务失败】")

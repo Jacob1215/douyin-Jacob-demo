@@ -26,7 +26,7 @@ func PublishVideo(c *gin.Context)  {
 	data,_ := json.Marshal(publishvideo.Data)
 
 	zap.S().Infof("%s",publishvideo.Title)
-	_,err := global.PublishSrvClient.PostVideo(context.Background(),&proto.DouyinPublishActionRequest{
+	_,err := global.PublishSrvClient.PostVideo(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinPublishActionRequest{
 		Token: publishvideo.Token,
 		Title: publishvideo.Title,
 		Data: data,

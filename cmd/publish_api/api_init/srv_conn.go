@@ -2,7 +2,9 @@ package api_init
 
 import (
 	"douyin-Jacob/cmd/publish_api/global"
+	"douyin-Jacob/pkg/tracer/otgrpc"
 	"douyin-Jacob/proto/publish"
+	"github.com/opentracing/opentracing-go"
 
 	"fmt"
 
@@ -22,6 +24,7 @@ func InitSrvConn()  {
 			global.ServerConfig.PublishSrvInfo.Name),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),
+		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
 	)
 	if err != nil {
 		zap.S().Fatal("[InitSrvConn]连接【用户服务失败】")

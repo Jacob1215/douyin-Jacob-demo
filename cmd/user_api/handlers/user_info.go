@@ -29,7 +29,7 @@ func GetUserInfo(c *gin.Context)  {
 	token := c.Query("token")
 	zap.S().Info(UserInfo.ID,UserInfo.Token)
 	//获取用户信息
-	rsp,err := global.UserSrvClient.GetUserById(context.Background(),&proto.DouyinUserRequest{
+	rsp,err := global.UserSrvClient.GetUserById(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRequest{
 		UserId: userid,
 		Token: token,//这个token应该是要验证的。
 	});

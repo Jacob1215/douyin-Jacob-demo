@@ -26,7 +26,7 @@ func GetUserVideoList (c *gin.Context)  {
 	userid,_ :=strconv.ParseInt(c.Query("user_id"),10,64)
 	token := c.Query("token")
 	zap.S().Info(userInfo.ID,userInfo.Token)
-	rsp,err :=global.PublishSrvClient.UserVideoList(context.Background(),&proto.DouyinPublishListRequest{
+	rsp,err :=global.PublishSrvClient.UserVideoList(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinPublishListRequest{
 		UserId: userid,
 		Token: token,
 	})

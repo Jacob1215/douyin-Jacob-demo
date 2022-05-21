@@ -4,6 +4,7 @@ import (
 	"douyin-Jacob/cmd/user/db/model"
 	"douyin-Jacob/cmd/user/global"
 	"douyin-Jacob/proto/user"
+	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -15,6 +16,8 @@ import (
 func (s *UserServer)GetUserInfoByName(ctx context.Context,req *proto.DouyinUserRequest)(*proto.DouyinUserResponse,error){
 	var user model.User
 	zap.S().Infof("%s",req.Name)
+	parentSpan := opentracing.SpanFromContext(s.ctx)
+	getUserInfoByNameSpan := opentracing.GlobalTracer().StartSpan("get_user_info_by_name",opentracing.ChildOf(parentSpan.Context()))
 	result := global.DB.Where(&model.User{Name: req.Name}).First(&user)
 	if result.RowsAffected == 0{
 		return nil,status.Errorf(codes.NotFound,"user not exist")
@@ -22,6 +25,7 @@ func (s *UserServer)GetUserInfoByName(ctx context.Context,req *proto.DouyinUserR
 	if result.Error != nil{
 		return nil,result.Error
 	}
+	getUserInfoByNameSpan.Finish()
 	userInfoRsp := proto.DouyinUserResponse{
 		StatusCode: 0,
 		StatusMsg: "get user info success",
@@ -41,6 +45,8 @@ func (s *UserServer)GetUserInfoByName(ctx context.Context,req *proto.DouyinUserR
 //通过Id查询用户
 func (s *UserServer)GetUserById(ctx context.Context,req *proto.DouyinUserRequest)(*proto.DouyinUserResponse,error){
 	var user model.User
+	parentSpan := opentracing.SpanFromContext(s.ctx)
+	getUserByIdSpan := opentracing.GlobalTracer().StartSpan("get_user_info_by_Id",opentracing.ChildOf(parentSpan.Context()))
 	result := global.DB.First(&user,req.UserId)
 	if result.RowsAffected == 0 {
 		return nil,status.Errorf(codes.NotFound,"user not exist")
@@ -48,6 +54,7 @@ func (s *UserServer)GetUserById(ctx context.Context,req *proto.DouyinUserRequest
 	if result.Error != nil{
 		return nil,result.Error
 	}
+	getUserByIdSpan.Finish()
 	userInfoRsp := proto.DouyinUserResponse{
 		StatusCode: 0,
 		StatusMsg: "get user info success",

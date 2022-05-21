@@ -35,7 +35,7 @@ func Register(c *gin.Context)  {
 		})
 		return
 	}
-	user,err := global.UserSrvClient.UserRegister(context.Background(),&proto.DouyinUserRegisterRequest{
+	user,err := global.UserSrvClient.UserRegister(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRegisterRequest{
 		Username: registerForm.UserName,
 		Password: registerForm.PassWord,
 	})
