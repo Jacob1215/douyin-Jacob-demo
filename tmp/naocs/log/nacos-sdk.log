@@ -1,0 +1,12 @@
+2022-05-19T22:09:59.723+0800	[31mERROR[0m	nacos_server/nacos_server.go:194	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"douyin-publish-api.json","group":"dev","tenant":"e72a0bed-78f9-495e-a4e2-dee1742e0e94"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2022-05-19T22:09:59.725+0800	[31mERROR[0m	nacos_server/nacos_server.go:194	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"douyin-publish-api.json","group":"dev","tenant":"e72a0bed-78f9-495e-a4e2-dee1742e0e94"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2022-05-19T22:09:59.729+0800	[31mERROR[0m	nacos_server/nacos_server.go:194	api</v1/cs/configs>,method:<GET>, params:<{"dataId":"douyin-publish-api.json","group":"dev","tenant":"e72a0bed-78f9-495e-a4e2-dee1742e0e94"}>, call domain error:<[404] config data not exist
+> , result:<config data not exist
+>
+2022-05-19T22:09:59.729+0800	[31mERROR[0m	config_client/config_client.go:191	get config from server error:[404] config data not exist
+ 
+2022-05-19T22:09:59.754+0800	[33mWARN[0m	config_client/config_client.go:196	[client.GetConfig] config not found, dataId: douyin-publish-api.json, group: dev, namespaceId: e72a0bed-78f9-495e-a4e2-dee1742e0e94.

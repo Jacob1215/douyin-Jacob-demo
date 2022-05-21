@@ -1,0 +1,8 @@
+host: '192.168.1.104'
+port: 8848
+namespace: '338c3295-bcba-4867-9c4f-7de97ebf2735'
+user: 'nacos'
+password: 'nacos'
+dataid: 'douyin-publish-srv.json'
+group: 'dev'
+

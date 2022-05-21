@@ -1,0 +1,17 @@
+{
+  "host": "192.168.1.125",
+  "name": "publish-web",
+  "tags": ["douyin","jacob","publish","web"],
+  "publish_srv": {
+    "host":"192.168.1.104",
+    "port": 8848,
+    "name": "publish-srv"
+  },
+  "jwt": {
+    "key": "h2iY6mfW2VVKBH9s"
+  },
+  "consul": {
+    "host": "192.168.1.104",
+    "port": 8500
+  }
+}
