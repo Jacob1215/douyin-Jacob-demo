@@ -5,6 +5,8 @@ import (
 	"douyin-Jacob/cmd/user_api/models"
 	middlewares "douyin-Jacob/pkg/middleware"
 	"douyin-Jacob/proto/user"
+	sentinel "github.com/alibaba/sentinel-golang/api"
+	"github.com/alibaba/sentinel-golang/core/base"
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -35,6 +37,16 @@ func Register(c *gin.Context)  {
 		})
 		return
 	}
+
+	//配置熔断限流。
+	e,b  := sentinel.Entry("publish_video",sentinel.WithTrafficType(base.Inbound))
+	if b !=nil{
+		c.JSON(http.StatusTooManyRequests,gin.H{
+			"status_code":429,
+			"status_msg":"too many requests,please try again later",
+		})
+		return
+	}
 	user,err := global.UserSrvClient.UserRegister(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRegisterRequest{
 		Username: registerForm.UserName,
 		Password: registerForm.PassWord,
@@ -44,6 +56,7 @@ func Register(c *gin.Context)  {
 		SendResponseToHttp(err,c,nil)
 		return
 	}
+	e.Exit()
 	//去拿token和验证token
 	j := middlewares.NewJWT(global.ServerConfig.JWTInfo.SigningKey)
 	cliams := models.CustomClaims{

@@ -4,6 +4,8 @@ import (
 	"douyin-Jacob/cmd/user_api/global"
 	"douyin-Jacob/cmd/user_api/models"
 	"douyin-Jacob/proto/user"
+	sentinel "github.com/alibaba/sentinel-golang/api"
+	"github.com/alibaba/sentinel-golang/core/base"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
@@ -28,6 +30,15 @@ func GetUserInfo(c *gin.Context)  {
 	userid,_ :=strconv.ParseInt(c.Query("user_id"),10,64)
 	token := c.Query("token")
 	zap.S().Info(UserInfo.ID,UserInfo.Token)
+	//配置熔断限流。
+	e,b  := sentinel.Entry("publish_video",sentinel.WithTrafficType(base.Inbound))
+	if b !=nil{
+		c.JSON(http.StatusTooManyRequests,gin.H{
+			"status_code":429,
+			"status_msg":"too many requests,please try again later",
+		})
+		return
+	}
 	//获取用户信息
 	rsp,err := global.UserSrvClient.GetUserById(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRequest{
 		UserId: userid,
@@ -44,6 +55,7 @@ func GetUserInfo(c *gin.Context)  {
 			return
 		}
 	}
+	e.Exit()
 	c.JSON(http.StatusOK,&proto.DouyinUserResponse{
 		StatusCode: 0,
 		StatusMsg: "get user info success",

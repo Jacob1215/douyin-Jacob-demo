@@ -5,6 +5,8 @@ import (
 	"douyin-Jacob/cmd/publish_api/global"
 	"douyin-Jacob/cmd/publish_api/models"
 	"douyin-Jacob/proto/publish"
+	sentinel "github.com/alibaba/sentinel-golang/api"
+	"github.com/alibaba/sentinel-golang/core/base"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -26,6 +28,15 @@ func GetUserVideoList (c *gin.Context)  {
 	userid,_ :=strconv.ParseInt(c.Query("user_id"),10,64)
 	token := c.Query("token")
 	zap.S().Info(userInfo.ID,userInfo.Token)
+	//配置熔断限流。
+	e,b  := sentinel.Entry("publish_video",sentinel.WithTrafficType(base.Inbound))
+	if b !=nil{
+		c.JSON(http.StatusTooManyRequests,gin.H{
+			"status_code":429,
+			"status_msg":"too many requests,please try again later",
+		})
+		return
+	}
 	rsp,err :=global.PublishSrvClient.UserVideoList(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinPublishListRequest{
 		UserId: userid,
 		Token: token,
@@ -41,6 +52,7 @@ func GetUserVideoList (c *gin.Context)  {
 			return
 		}
 	}
+	e.Exit()
 	c.JSON(http.StatusOK,&proto.DouyinPublishListResponse{
 		StatusCode: 0,
 		StatusMsg: "get user video list success",
