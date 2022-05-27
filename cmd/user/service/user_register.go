@@ -20,7 +20,7 @@ import (
 func (s *UserServer)UserRegister(ctx context.Context,req *proto.DouyinUserRegisterRequest) (*proto.DouyinUserRegisterResponse,error)  {
 	zap.S().Infof(req.Username)
 	var user model.User
-	parentSpan := opentracing.SpanFromContext(s.ctx)
+	parentSpan := opentracing.SpanFromContext(ctx)
 	userRegisterSpan := opentracing.GlobalTracer().StartSpan("user_register",opentracing.ChildOf(parentSpan.Context()))
 	result := global.DB.Where(&model.User{Name: req.Username}).First(&user)
 	if result.RowsAffected == 1{

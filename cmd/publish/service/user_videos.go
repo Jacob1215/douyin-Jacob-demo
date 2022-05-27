@@ -15,7 +15,7 @@ func (s *PublishServer) UserVideoList(ctx context.Context,req *proto.DouyinPubli
 	videoListResponse := proto.DouyinPublishListResponse{}
 	var videoList []model.VideoPublish
 	//拿parentSpan//链路追踪，每个查询服务都去调用一下。
-	parentSpan := opentracing.SpanFromContext(s.Ctx)
+	parentSpan := opentracing.SpanFromContext(ctx)
 	userVideoListSpan := opentracing.GlobalTracer().StartSpan("User_video_list",opentracing.ChildOf(parentSpan.Context()))
 	result := global.DB.Where(&model.BaseModel{ID: req.UserId}).Find(&videoList)
 	if result.RowsAffected == 0{

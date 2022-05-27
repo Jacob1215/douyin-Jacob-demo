@@ -1,7 +1,7 @@
 package middlewares
 
 import (
-	"douyin-Jacob/cmd/user_api/models"
+	"douyin-Jacob/pkg/middleware/models"
 
 	"errors"
 	"github.com/dgrijalva/jwt-go"

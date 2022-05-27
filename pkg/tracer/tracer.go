@@ -6,12 +6,10 @@ import (
 	"github.com/uber/jaeger-client-go"
 	jaegercfg "github.com/uber/jaeger-client-go/config"
 
-	"douyin-Jacob/cmd/user_api/global"
-
 	"github.com/gin-gonic/gin"
 )
 
-func Trace()gin.HandlerFunc{
+func Trace(host string,port int,name string)gin.HandlerFunc{
 	return func(ctx *gin.Context) {
 		cfg := jaegercfg.Configuration{
 			Sampler: &jaegercfg.SamplerConfig{
@@ -20,9 +18,9 @@ func Trace()gin.HandlerFunc{
 			},
 			Reporter: &jaegercfg.ReporterConfig{
 				LogSpans: true,
-				LocalAgentHostPort: fmt.Sprintf("%s:%d",global.ServerConfig.JaegerInfo.Host,global.ServerConfig.JaegerInfo.Port),//默认端口
+				LocalAgentHostPort: fmt.Sprintf("%s:%d",host,port),//默认端口
 			},
-			ServiceName: global.ServerConfig.JaegerInfo.Name,
+			ServiceName: name,
 		}
 		tracer, closer, err := cfg.NewTracer(jaegercfg.Logger(jaeger.StdLogger))
 		//标准输出。// StdLogger is implementation of the Logger interface that delegates to default `log` package
@@ -39,3 +37,4 @@ func Trace()gin.HandlerFunc{
 		ctx.Next()
 	}
 }
+

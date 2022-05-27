@@ -15,7 +15,7 @@ func (s *UserServer)UserLoginByName(ctx context.Context,req *proto.DouyinUserLog
 	options := &password.Options{16,100,32,sha512.New}
 	passwordInfo := strings.Split(req.EncryptedPassword,"$")
 	//zap.S().Infof("加密后的密码：%s",passwordInfo)
-	parentSpan := opentracing.SpanFromContext(s.ctx)
+	parentSpan := opentracing.SpanFromContext(ctx)
 	userLoginSpan := opentracing.GlobalTracer().StartSpan("user_login",opentracing.ChildOf(parentSpan.Context()))
 	check := password.Verify(req.Password,passwordInfo[2],passwordInfo[3],options)
 	if check  == false{

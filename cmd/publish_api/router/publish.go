@@ -27,7 +27,7 @@ func InitRouters() (c *gin.Engine) {
 
 
 func InitPublishRouter(Router *gin.RouterGroup)  {
-	Publish := Router.Group("/publish").Use(tracer.Trace())
+	Publish := Router.Group("/publish").Use(tracer.Trace(global.ServerConfig.JaegerInfo.Host,global.ServerConfig.JaegerInfo.Port,global.ServerConfig.JaegerInfo.Name))
 	zap.S().Info("配置publish相关的url")
 	{
 		Publish.GET("/list", middlewares.JWTAuth(global.ServerConfig.JWTInfo.SigningKey),handlers.GetUserVideoList)

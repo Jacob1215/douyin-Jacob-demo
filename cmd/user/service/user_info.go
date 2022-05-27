@@ -16,7 +16,7 @@ import (
 func (s *UserServer)GetUserInfoByName(ctx context.Context,req *proto.DouyinUserRequest)(*proto.DouyinUserResponse,error){
 	var user model.User
 	zap.S().Infof("%s",req.Name)
-	parentSpan := opentracing.SpanFromContext(s.ctx)
+	parentSpan := opentracing.SpanFromContext(ctx)//这里直接把ctx放进去就好了。//回头写一篇这个文章
 	getUserInfoByNameSpan := opentracing.GlobalTracer().StartSpan("get_user_info_by_name",opentracing.ChildOf(parentSpan.Context()))
 	result := global.DB.Where(&model.User{Name: req.Name}).First(&user)
 	if result.RowsAffected == 0{
@@ -45,7 +45,7 @@ func (s *UserServer)GetUserInfoByName(ctx context.Context,req *proto.DouyinUserR
 //通过Id查询用户
 func (s *UserServer)GetUserById(ctx context.Context,req *proto.DouyinUserRequest)(*proto.DouyinUserResponse,error){
 	var user model.User
-	parentSpan := opentracing.SpanFromContext(s.ctx)
+	parentSpan := opentracing.SpanFromContext(ctx)
 	getUserByIdSpan := opentracing.GlobalTracer().StartSpan("get_user_info_by_Id",opentracing.ChildOf(parentSpan.Context()))
 	result := global.DB.First(&user,req.UserId)
 	if result.RowsAffected == 0 {

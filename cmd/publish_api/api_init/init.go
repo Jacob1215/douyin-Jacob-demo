@@ -12,7 +12,7 @@ func InitAll()  {
 	//初始化连接
 	InitSrvConn()
 	//初始化sentinel
-	//InitSentinel()
+	InitSentinel()
 	//初始化jaeger
 	//tracer.Trace()
 }

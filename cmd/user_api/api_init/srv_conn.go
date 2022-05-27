@@ -17,8 +17,7 @@ import (
 //初始化连接
 func InitSrvConn()  {
 	consulInfo := global.ServerConfig.ConsulInfo
-	zap.S().Info(global.ServerConfig)
-	zap.S().Infof("%s",global.ServerConfig.UserSrvInfo)
+
 	userConn, err := grpc.Dial(
 		fmt.Sprintf("consul://%s:%d/%s?wait=14s",consulInfo.Host,consulInfo.Port,
 			global.ServerConfig.UserSrvInfo.Name),

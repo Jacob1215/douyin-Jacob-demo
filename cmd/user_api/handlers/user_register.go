@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"douyin-Jacob/cmd/user_api/global"
-	"douyin-Jacob/cmd/user_api/models"
+	"douyin-Jacob/pkg/middleware/models"
 	middlewares "douyin-Jacob/pkg/middleware"
 	"douyin-Jacob/proto/user"
 	sentinel "github.com/alibaba/sentinel-golang/api"

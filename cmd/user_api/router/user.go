@@ -26,7 +26,7 @@ func InitRouters() (c *gin.Engine) {
 }
 
 func InitUserRouter(Router *gin.RouterGroup)  {//注册用户相关的路由
-	UserRouter := Router.Group("/user").Use(tracer.Trace())
+	UserRouter := Router.Group("/user").Use(tracer.Trace(global.ServerConfig.JaegerInfo.Host, global.ServerConfig.JaegerInfo.Port,global.ServerConfig.JaegerInfo.Name))
 	zap.S().Info("配置用户相关的url")
 	{
 		UserRouter.GET("/",middlewares.JWTAuth(global.ServerConfig.JWTInfo.SigningKey),

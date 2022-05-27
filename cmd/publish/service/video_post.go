@@ -13,7 +13,7 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 	publishVideo.Title = request.Title
 	publishVideo.User.ID = request.User.Id
 	publishVideo.Data = request.Data
-	parentSpan := opentracing.SpanFromContext(s.Ctx)
+	parentSpan := opentracing.SpanFromContext(ctx)
 	postVideoSpan := opentracing.GlobalTracer().StartSpan("post_video",opentracing.ChildOf(parentSpan.Context()))
 
 	global.DB.Save(&publishVideo)

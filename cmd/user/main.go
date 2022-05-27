@@ -7,9 +7,13 @@ import (
 	"douyin-Jacob/cmd/user/user_init"
 	"douyin-Jacob/pkg/consul"
 	"douyin-Jacob/pkg/initialize"
+	"douyin-Jacob/pkg/tracer/otgrpc"
 	"douyin-Jacob/pkg/utils"
 	"douyin-Jacob/proto/user"
 	"github.com/hashicorp/consul/api"
+	"github.com/opentracing/opentracing-go"
+	"github.com/uber/jaeger-client-go"
+	jaegercfg "github.com/uber/jaeger-client-go/config"
 
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
@@ -43,8 +47,28 @@ func main()  {
 
 	zap.S().Info("port:",*Port)
 
+
+
+	//初始化jaeger，
+	cfg := jaegercfg.Configuration{
+		Sampler: &jaegercfg.SamplerConfig{
+			Type: jaeger.SamplerTypeConst,
+			Param: 1,
+		},
+		Reporter: &jaegercfg.ReporterConfig{
+			LogSpans: true,
+			LocalAgentHostPort: fmt.Sprintf("%s:%d",global.ServerConfig.JaegerInfo.Host,global.ServerConfig.JaegerInfo.Port),
+		},
+		ServiceName: global.ServerConfig.JaegerInfo.Name,
+	}
+	tracer,closer,err := cfg.NewTracer(jaegercfg.Logger(jaeger.StdLogger))
+	if err !=nil{
+		panic(err)
+	}
+	opentracing.SetGlobalTracer(tracer)
 	//服务连接建立。//用的grpc
-	server := grpc.NewServer()
+	server := grpc.NewServer(grpc.UnaryInterceptor(otgrpc.OpenTracingServerInterceptor(tracer)))
+
 	proto.RegisterUserServer(server,&service.UserServer{})//这里必须实现user的所有方法。
 	lis,err := net.Listen("tcp",fmt.Sprintf("%s:%d",*Ip,*Port))
 	if err != nil{
@@ -80,6 +104,7 @@ func main()  {
 	quit := make(chan os.Signal)
 	signal.Notify(quit,syscall.SIGINT,syscall.SIGTERM)
 	<-quit
+	_ = closer.Close()
 	if err = register_client.DeRegister(serviceId); err != nil{
 		zap.S().Info("注销失败")
 	}

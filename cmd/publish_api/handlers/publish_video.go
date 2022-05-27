@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"douyin-Jacob/cmd/publish_api/global"
+	"douyin-Jacob/pkg/middleware/models"
 	"douyin-Jacob/proto/publish"
 	"encoding/json"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
-
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
@@ -22,6 +22,9 @@ type PublishVideoInfo struct {
 
 func PublishVideo(c *gin.Context)  {
 	publishvideo := PublishVideoInfo{}
+
+	claims := models.CustomClaims{}
+
 	if err := c.ShouldBindJSON(&publishvideo);err != nil{
 		HandleValidatorError(c,err)
 	}
@@ -37,8 +40,12 @@ func PublishVideo(c *gin.Context)  {
 	}
 
 	zap.S().Infof("%s",publishvideo.Title)
+
 	_,err := global.PublishSrvClient.PostVideo(context.WithValue(context.Background(),"ginContext",c),//配置tracing
 		&proto.DouyinPublishActionRequest{
+		User: &proto.UserIn{
+			Id:int64(claims.ID),
+		},
 		Token: publishvideo.Token,
 		Title: publishvideo.Title,
 		Data: data,
