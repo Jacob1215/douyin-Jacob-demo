@@ -1,10 +1,9 @@
 package handlers
 
 import (
-	"douyin-Jacob/cmd/publish_api/global"
+	global2 "douyin-Jacob/cmd/api/publish_api/global"
 	"douyin-Jacob/pkg/middleware/models"
 	"douyin-Jacob/proto"
-
 
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -56,7 +55,7 @@ func PublishVideo(c *gin.Context)  {
 
 	zap.S().Infof("%s",publishvideo.Title)
 
-	_,err = global.PublishSrvClient.PostVideo(context.WithValue(context.Background(),"ginContext",c),//配置tracing
+	_,err = global2.PublishSrvClient.PostVideo(context.WithValue(context.Background(),"ginContext",c), //配置tracing
 		&proto.DouyinPublishActionRequest{
 		User: &proto.User{
 			Id:int64(claims.ID),

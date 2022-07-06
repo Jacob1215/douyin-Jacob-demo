@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"douyin-Jacob/cmd/favorite_api/global"
+	global2 "douyin-Jacob/cmd/api/favorite_api/global"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -37,7 +37,7 @@ func FavoriteList(c *gin.Context)  {
 		return
 	}
 
-	resp,err := global.FavoriteSrvClient.DouyinFavoriteList(context.WithValue(context.Background(),"ginContext",c),
+	resp,err := global2.FavoriteSrvClient.DouyinFavoriteList(context.WithValue(context.Background(),"ginContext",c),
 		&proto.DouyinFavoriteListRequest{
 			UserId: paramVar.UserId,
 			Token: paramVar.Token,

@@ -1,8 +1,7 @@
 package service
 
 import (
-
-	"douyin-Jacob/cmd/user/global"
+	global2 "douyin-Jacob/cmd/srv/user/global"
 	"douyin-Jacob/dal/db"
 	"douyin-Jacob/proto"
 	"github.com/opentracing/opentracing-go"
@@ -19,7 +18,7 @@ func (s *UserServer)GetUserInfoByName(ctx context.Context,req *proto.DouyinUserR
 	zap.S().Infof("%s",req.Name)
 	parentSpan := opentracing.SpanFromContext(ctx)//这里直接把ctx放进去就好了。//回头写一篇这个文章
 	getUserInfoByNameSpan := opentracing.GlobalTracer().StartSpan("get_user_info_by_name",opentracing.ChildOf(parentSpan.Context()))
-	result := global.DB.Where(&db.User{UserName: req.Name}).First(&user)
+	result := global2.DB.Where(&db.User{UserName: req.Name}).First(&user)
 	if result.RowsAffected == 0{
 		return nil,status.Errorf(codes.NotFound,"user not exist")
 	}
@@ -47,7 +46,7 @@ func (s *UserServer)GetUserById(ctx context.Context,req *proto.DouyinUserRequest
 	var user db.User
 	parentSpan := opentracing.SpanFromContext(ctx)
 	getUserByIdSpan := opentracing.GlobalTracer().StartSpan("get_user_info_by_Id",opentracing.ChildOf(parentSpan.Context()))
-	result := global.DB.First(&user,req.UserId)
+	result := global2.DB.First(&user,req.UserId)
 	if result.RowsAffected == 0 {
 		return nil,status.Errorf(codes.NotFound,"user not exist")
 	}

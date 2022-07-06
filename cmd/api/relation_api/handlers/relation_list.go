@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"douyin-Jacob/cmd/relation_api/global"
+	global2 "douyin-Jacob/cmd/api/relation_api/global"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -36,7 +36,7 @@ func RelationFollowList(c *gin.Context)  {
 		})
 		return
 	}
-	resp,err := global.RelationSrvClient.DouyinRelationFollow(context.WithValue(context.Background(),"ginContext",c),
+	resp,err := global2.RelationSrvClient.DouyinRelationFollow(context.WithValue(context.Background(),"ginContext",c),
 		&proto.DouyinRelationFollowListRequest{
 			UserId: followPara.UserId,
 			Token:followPara.Token,
@@ -67,7 +67,7 @@ func RelationFollowerList(c *gin.Context)  {
 		})
 		return
 	}
-	resp,err := global.RelationSrvClient.DouyinRelationFollower(context.WithValue(context.Background(),"ginContext",c),
+	resp,err := global2.RelationSrvClient.DouyinRelationFollower(context.WithValue(context.Background(),"ginContext",c),
 		&proto.DouyinRelationFollowerListRequest{
 		UserId: followerPara.UserId,
 		Token: followerPara.Token,

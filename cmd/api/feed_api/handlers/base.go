@@ -52,7 +52,7 @@ func SendResponseToHttp(err error, c *gin.Context,data interface{}) {
 			return
 		}
 	}
-	c.JSON(http.StatusOK,Response{
+	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
 		StatusMsg: "get user info success",
 		Data: data,

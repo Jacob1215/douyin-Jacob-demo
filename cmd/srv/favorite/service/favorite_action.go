@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin-Jacob/cmd/favorite/global"
+	global2 "douyin-Jacob/cmd/srv/favorite/global"
 	"douyin-Jacob/dal/db"
 	proto "douyin-Jacob/proto"
 	"google.golang.org/grpc/codes"
@@ -12,7 +12,7 @@ import (
 //点赞和删除操作。//注意查表的操作
 func (s *Favorite) DouyinFavoriteAction(ctx context.Context, req *proto.DouyinFavoriteActionRequest)(*proto.DouyinFavoriteActionResponse,error){
 	if req.ActionType == 1{
-		err := global.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 			user := new(db.User)
 			//找到user
 			if err := tx.WithContext(ctx).First(user,req.UserId).Error;err != nil{
@@ -43,14 +43,14 @@ func (s *Favorite) DouyinFavoriteAction(ctx context.Context, req *proto.DouyinFa
 	}
 	//取消点赞
 	if req.ActionType == 2{
-		err := global.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 			user := new(db.User)
 			if err := tx.WithContext(ctx).First(user,req.UserId).Error;err != nil{
 				return err
 			}
 			//通过user找到video
 			video := new(db.Video)
-			if err := global.DB.WithContext(ctx).Model(&user).Association("FavoriteVideo").Find(&video,req.VideoId);err !=nil{
+			if err := global2.DB.WithContext(ctx).Model(&user).Association("FavoriteVideo").Find(&video,req.VideoId);err !=nil{
 				return err
 			}
 			//删除user表中的这个视频。

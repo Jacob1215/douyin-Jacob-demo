@@ -2,21 +2,21 @@ package service
 
 import (
 	"context"
-	"douyin-Jacob/cmd/relation/global"
+	global2 "douyin-Jacob/cmd/srv/relation/global"
 	"douyin-Jacob/dal/db"
 	proto "douyin-Jacob/proto"
 )
 
 func (s *Relation)DouyinRelationFollow(ctx context.Context, req *proto.DouyinRelationFollowListRequest)(*proto.DouyinRelationFollowListResponse,error)  {
 	followUserList := []*db.Relation{}
-	err := global.DB.WithContext(ctx).Where("user_id = ?",req.UserId).Find(&followUserList).Error
+	err := global2.DB.WithContext(ctx).Where("user_id = ?",req.UserId).Find(&followUserList).Error
 	if err != nil{
 		return nil, err
 	}
 	followUser := []*db.User{}
 	for _,user := range followUserList{
 		var user2 *db.User
-		if  err = global.DB.WithContext(ctx).First(&user2,user.ID).Error;err != nil{
+		if  err = global2.DB.WithContext(ctx).First(&user2,user.ID).Error;err != nil{
 			return nil,err
 		}
 		followUser =append(followUser,user2)

@@ -1,7 +1,7 @@
 package user_init
 
 import (
-	"douyin-Jacob/cmd/user/global"
+	global2 "douyin-Jacob/cmd/srv/user/global"
 	"douyin-Jacob/pkg/constants"
 
 	"encoding/json"
@@ -24,24 +24,24 @@ func InitConfig()  {
 	}
 
 	//从nacos中读取配置信息
-	if err := v.Unmarshal(&global.NacosConfig);err != nil{
+	if err := v.Unmarshal(&global2.NacosConfig);err != nil{
 		panic(err)
 	}
-	zap.S().Info("配置信息:%v",global.NacosConfig)
+	zap.S().Info("配置信息:%v", global2.NacosConfig)
 	//配置信息使用
 	sc := []constant.ServerConfig{
 		{
-			IpAddr: global.NacosConfig.Host,
-			Port:   global.NacosConfig.Port,
+			IpAddr: global2.NacosConfig.Host,
+			Port:   global2.NacosConfig.Port,
 		},
 	}
 
 	cc := constant.ClientConfig{
-		NamespaceId: global.NacosConfig.Namespace,
-		TimeoutMs: 5000,
+		NamespaceId:         global2.NacosConfig.Namespace,
+		TimeoutMs:           5000,
 		NotLoadCacheAtStart: true,
-		LogDir: constants.LogDir,
-		CacheDir: constants.CacheDir,
+		LogDir:              constants.LogDir,
+		CacheDir:            constants.CacheDir,
 		LogRollingConfig: &constant.ClientLogRollingConfig{
 			MaxAge: 3,
 		},
@@ -57,15 +57,15 @@ func InitConfig()  {
 		panic(err)
 	}
 	content,err := configClient.GetConfig(vo.ConfigParam{
-		DataId: global.NacosConfig.DataId,
-		Group: global.NacosConfig.Group,
+		DataId: global2.NacosConfig.DataId,
+		Group:  global2.NacosConfig.Group,
 	})
 	if err != nil{panic(err)}
 	//json转struct
-	err = json.Unmarshal([]byte(content),&global.ServerConfig)
+	err = json.Unmarshal([]byte(content),&global2.ServerConfig)
 	if err != nil{
 		zap.S().Fatalf("读取nacos配置失败：%s",err)
 	}
-	fmt.Println(&global.ServerConfig)
+	fmt.Println(&global2.ServerConfig)
 
 }

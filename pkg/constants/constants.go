@@ -16,19 +16,19 @@ const (
 	CPURateLimit    float64 = 80.0
 	DefaultLimit            = 10
 
-	UserSrvConfigFileName =  "cmd/user/douyin-debug.yaml"
-	PubSrvConfigFileName = "cmd/publish/douyin-debug.yaml"
-	UserApiConfigFileName =  "cmd/user_api/douyin-debug.yaml"
-	PubApiConfigFileName = "cmd/publish_api/douyin-debug.yaml"
-	OssApiConfigFileName = "cmd/oss_api/douyin-debug.yaml"
-	FeedSrvConfigFileName ="cmd/feed/douyin-debug.yaml"
-	FeedApiConfigFileName ="cmd/feed_api/douyin-debug.yaml"
-	FavoriteSrvConfigFileName = "cmd/favorite/douyin-debug.yaml"
-	FavoriteApiConfigFileName = "cmd/favorite_api/douyin-debug.yaml"
-	CommentSrvConfigFileName ="cmd/comment/douyin-debug.yaml"
-	CommentApiConfigFileName = "cmd/comment_api/douyin-debug.yaml"
-	RelationSrvConfigFileName = "cmd/relation/douyin-debug.yaml"
-	RelationApiConfigFileName = "cmd/relation_api/douyin-debug.yaml"
+	UserSrvConfigFileName =  "cmd/srv/user/douyin-debug.yaml"
+	PubSrvConfigFileName = "cmd/srv/publish/douyin-debug.yaml"
+	UserApiConfigFileName =  "cmd/api/user_api/douyin-debug.yaml"
+	PubApiConfigFileName = "cmd/api/publish_api/douyin-debug.yaml"
+	OssApiConfigFileName = "cmd/api/oss_api/douyin-debug.yaml"
+	FeedSrvConfigFileName ="cmd/srv/feed/douyin-debug.yaml"
+	FeedApiConfigFileName ="cmd/api/feed_api/douyin-debug.yaml"
+	FavoriteSrvConfigFileName = "cmd/srv/favorite/douyin-debug.yaml"
+	FavoriteApiConfigFileName = "cmd/api/favorite_api/douyin-debug.yaml"
+	CommentSrvConfigFileName ="cmd/srv/comment/douyin-debug.yaml"
+	CommentApiConfigFileName = "cmd/api/comment_api/douyin-debug.yaml"
+	RelationSrvConfigFileName = "cmd/srv/relation/douyin-debug.yaml"
+	RelationApiConfigFileName = "cmd/api/relation_api/douyin-debug.yaml"
 
 
 

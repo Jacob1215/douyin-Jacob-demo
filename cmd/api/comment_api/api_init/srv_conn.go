@@ -1,7 +1,7 @@
 package api_init
 
 import (
-	"douyin-Jacob/cmd/comment_api/global"
+	global2 "douyin-Jacob/cmd/api/comment_api/global"
 	"douyin-Jacob/pkg/tracer/otgrpc"
 	"douyin-Jacob/proto"
 	"github.com/opentracing/opentracing-go"
@@ -16,12 +16,12 @@ import (
 
 //初始化连接
 func InitSrvConn()  {
-	consulInfo := global.ServerConfig.ConsulInfo
-	zap.S().Info(global.ServerConfig)
-	zap.S().Infof("%s",global.ServerConfig.CommentInfo)
+	consulInfo := global2.ServerConfig.ConsulInfo
+	zap.S().Info(global2.ServerConfig)
+	zap.S().Infof("%s", global2.ServerConfig.CommentInfo)
 	commentConn, err := grpc.Dial(
 		fmt.Sprintf("consul://%s:%d/%s?wait=14s",consulInfo.Host,consulInfo.Port,
-			global.ServerConfig.CommentInfo.Name),
+			global2.ServerConfig.CommentInfo.Name),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),
 		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
@@ -31,5 +31,5 @@ func InitSrvConn()  {
 		zap.S().Fatal("[InitSrvConn]连接【用户服务失败】")
 	}
 	commentClient := proto.NewCommentSrvClient(commentConn)
-	global.CommentSrvClient = commentClient
+	global2.CommentSrvClient = commentClient
 }

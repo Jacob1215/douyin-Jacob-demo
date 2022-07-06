@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin-Jacob/cmd/publish/global"
+	global2 "douyin-Jacob/cmd/srv/publish/global"
 	"douyin-Jacob/dal/db"
 	"douyin-Jacob/proto"
 	"github.com/opentracing/opentracing-go"
@@ -17,7 +17,7 @@ func (s *PublishServer) UserVideoList(ctx context.Context,req *proto.DouyinPubli
 	//拿parentSpan//链路追踪，每个查询服务都去调用一下。
 	parentSpan := opentracing.SpanFromContext(ctx)
 	userVideoListSpan := opentracing.GlobalTracer().StartSpan("User_video_list",opentracing.ChildOf(parentSpan.Context()))
-	result := global.DB.Where(&db.BaseModel{ID: req.UserId}).Find(&videoList)
+	result := global2.DB.Where(&db.BaseModel{ID: req.UserId}).Find(&videoList)
 	if result.RowsAffected == 0{
 		return nil,status.Errorf(codes.NotFound,"User not exist")
 	}

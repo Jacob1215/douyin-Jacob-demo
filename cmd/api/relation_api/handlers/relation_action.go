@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"douyin-Jacob/cmd/relation_api/global"
+	global2 "douyin-Jacob/cmd/api/relation_api/global"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -49,7 +49,7 @@ func RelationAction(c *gin.Context)  {
 		return
 	}
 
-	resp,err := global.RelationSrvClient.DouyinRelationAction(context.WithValue(context.Background(),"ginContext",c),
+	resp,err := global2.RelationSrvClient.DouyinRelationAction(context.WithValue(context.Background(),"ginContext",c),
 		&proto.DouyinRelationActionRequest{
 			ToUserId: relationPara.ToUserId,
 			Token: relationPara.Token,

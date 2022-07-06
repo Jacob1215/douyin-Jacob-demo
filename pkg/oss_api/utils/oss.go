@@ -7,7 +7,7 @@ import (
 	"crypto/rsa"
 	"crypto/sha1"
 	"crypto/x509"
-	global2 "douyin-Jacob/cmd/api/oss_api/global"
+	"douyin-Jacob/pkg/oss_api/global"
 	"encoding/base64"
 	"encoding/json"
 	"encoding/pem"
@@ -83,18 +83,18 @@ func Get_policy_token() string {
 	var condition []string
 	condition = append(condition, "starts-with")
 	condition = append(condition, "$key")
-	condition = append(condition, global2.ServerConfig.OssInfo.UploadDir)
+	condition = append(condition, global.ServerConfig.OssInfo.UploadDir)
 	config.Conditions = append(config.Conditions, condition)
 
 	//calucate signature
 	result,err:=json.Marshal(config)
 	debyte := base64.StdEncoding.EncodeToString(result)
-	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(global2.ServerConfig.OssInfo.ApiSecrect))
+	h := hmac.New(func() hash.Hash { return sha1.New() }, []byte(global.ServerConfig.OssInfo.ApiSecrect))
 	io.WriteString(h, debyte)
 	signedStr := base64.StdEncoding.EncodeToString(h.Sum(nil))
 
 	var callbackParam CallbackParam
-	callbackParam.CallbackUrl = global2.ServerConfig.OssInfo.CallBackUrl
+	callbackParam.CallbackUrl = global.ServerConfig.OssInfo.CallBackUrl
 	callbackParam.CallbackBody = "filename=${object}&size=${size}&mimeType=${mimeType}&height=${imageInfo.height}&width=${imageInfo.width}"
 	callbackParam.CallbackBodyType = "application/x-www-form-urlencoded"
 	callback_str,err:=json.Marshal(callbackParam)
@@ -104,11 +104,11 @@ func Get_policy_token() string {
 	callbackBase64 := base64.StdEncoding.EncodeToString(callback_str)
 
 	var policyToken PolicyToken
-	policyToken.AccessKeyId = global2.ServerConfig.OssInfo.ApiKey
-	policyToken.Host = global2.ServerConfig.OssInfo.Host
+	policyToken.AccessKeyId = global.ServerConfig.OssInfo.ApiKey
+	policyToken.Host = global.ServerConfig.OssInfo.Host
 	policyToken.Expire = expire_end
 	policyToken.Signature = string(signedStr)
-	policyToken.Directory = global2.ServerConfig.OssInfo.UploadDir
+	policyToken.Directory = global.ServerConfig.OssInfo.UploadDir
 	policyToken.Policy = string(debyte)
 	policyToken.Callback = string(callbackBase64)
 	response,err:=json.Marshal(policyToken)

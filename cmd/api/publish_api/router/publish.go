@@ -1,8 +1,8 @@
 package router
 
 import (
-	"douyin-Jacob/cmd/publish_api/global"
-	"douyin-Jacob/cmd/publish_api/handlers"
+	global2 "douyin-Jacob/cmd/api/publish_api/global"
+	handlers2 "douyin-Jacob/cmd/api/publish_api/handlers"
 	middlewares "douyin-Jacob/pkg/middleware"
 	"douyin-Jacob/pkg/tracer"
 	"github.com/gin-gonic/gin"
@@ -27,10 +27,10 @@ func InitRouters() (c *gin.Engine) {
 
 
 func InitPublishRouter(Router *gin.RouterGroup)  {
-	Publish := Router.Group("/publish").Use(tracer.Trace(global.ServerConfig.JaegerInfo.Host,global.ServerConfig.JaegerInfo.Port,global.ServerConfig.JaegerInfo.Name))
+	Publish := Router.Group("/publish").Use(tracer.Trace(global2.ServerConfig.JaegerInfo.Host, global2.ServerConfig.JaegerInfo.Port, global2.ServerConfig.JaegerInfo.Name))
 	zap.S().Info("配置publish相关的url")
 	{
-		Publish.GET("/list", middlewares.JWTAuth(global.ServerConfig.JWTInfo.SigningKey),handlers.GetUserVideoList)
-		Publish.POST("/action", middlewares.JWTAuth(global.ServerConfig.JWTInfo.SigningKey),handlers.PublishVideo)
+		Publish.GET("/list", middlewares.JWTAuth(global2.ServerConfig.JWTInfo.SigningKey), handlers2.GetUserVideoList)
+		Publish.POST("/action", middlewares.JWTAuth(global2.ServerConfig.JWTInfo.SigningKey), handlers2.PublishVideo)
 	}
 }

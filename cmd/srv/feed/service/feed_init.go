@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
+	global2 "douyin-Jacob/cmd/srv/feed/global"
 	"douyin-Jacob/pkg/constants"
 	"douyin-Jacob/proto"
 	"time"
 
-	"douyin-Jacob/cmd/feed/global"
 	"douyin-Jacob/dal/db"
 
 	"google.golang.org/grpc/codes"
@@ -24,7 +24,7 @@ func (s *FeedSrvServer) DouyinFeed(ctx context.Context,request *proto.DouyinFeed
 	}
 
 	//TODO 这个时间是怎么处理的。
-	res := global.DB.Limit(constants.Limit).Order("update_time desc").Find(&videoFeed, "update_time < ?", time.UnixMilli(*latestTime))
+	res := global2.DB.Limit(constants.Limit).Order("update_time desc").Find(&videoFeed, "update_time < ?", time.UnixMilli(*latestTime))
 	if res.RowsAffected == 0 {
 		return nil, status.Errorf(codes.NotFound, "Video feed not exist")
 	}

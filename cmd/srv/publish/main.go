@@ -1,9 +1,9 @@
 package main
 
 import (
-	"douyin-Jacob/cmd/publish/global"
-	"douyin-Jacob/cmd/publish/publish_init"
-	"douyin-Jacob/cmd/publish/service"
+	global2 "douyin-Jacob/cmd/srv/publish/global"
+	publish_init2 "douyin-Jacob/cmd/srv/publish/publish_init"
+	service2 "douyin-Jacob/cmd/srv/publish/service"
 	"douyin-Jacob/pkg/consul"
 	"douyin-Jacob/pkg/initialize"
 	"douyin-Jacob/pkg/tracer/otgrpc"
@@ -35,8 +35,8 @@ func main()  {
 	Port := flag.Int("port",0,"端口号")
 	//	initialize
 	initialize.InitLogger()
-	publish_init.InitConfig()
-	publish_init.InitDB()
+	publish_init2.InitConfig()
+	publish_init2.InitDB()
 	// Parse parses the command-line flags from os.Args[1:]. Must be called
 	// after all flags are defined and before flags are accessed by the program.
 	flag.Parse()
@@ -45,7 +45,7 @@ func main()  {
 		*Port,_ = utils.GetFreePort()
 	}
 	zap.S().Info("port:",*Port)
-	global.ServerConfig.Port = *Port
+	global2.ServerConfig.Port = *Port
 
 	//初始化jaeger，
 	cfg := jaegercfg.Configuration{
@@ -55,9 +55,9 @@ func main()  {
 		},
 		Reporter: &jaegercfg.ReporterConfig{
 			LogSpans: true,
-			LocalAgentHostPort: fmt.Sprintf("%s:%d",global.ServerConfig.JaegerInfo.Host,global.ServerConfig.JaegerInfo.Port),
+			LocalAgentHostPort: fmt.Sprintf("%s:%d", global2.ServerConfig.JaegerInfo.Host, global2.ServerConfig.JaegerInfo.Port),
 		},
-		ServiceName: global.ServerConfig.JaegerInfo.Name,
+		ServiceName: global2.ServerConfig.JaegerInfo.Name,
 	}
 	tracer,closer,err := cfg.NewTracer(jaegercfg.Logger(jaeger.StdLogger))
 	if err !=nil{
@@ -68,7 +68,7 @@ func main()  {
 
 	//服务连接建立。//用的grpc
 	server := grpc.NewServer(grpc.UnaryInterceptor(otgrpc.OpenTracingServerInterceptor(tracer)))
-	proto.RegisterPublishSrvServer(server,&service.PublishServer{})
+	proto.RegisterPublishSrvServer(server,&service2.PublishServer{})
 	lis,err := net.Listen("tcp",fmt.Sprintf("%s:%d",*Ip,*Port))
 	if err != nil{
 		panic("failed to listen:"+err.Error())
@@ -77,20 +77,20 @@ func main()  {
 	grpc_health_v1.RegisterHealthServer(server,health.NewServer())
 
 	//服务注册
-	register_client := consul.NewRegistryClient(global.ServerConfig.ConsulInfo.Host,global.ServerConfig.ConsulInfo.Port)
+	register_client := consul.NewRegistryClient(global2.ServerConfig.ConsulInfo.Host, global2.ServerConfig.ConsulInfo.Port)
 	serviceId := fmt.Sprintf("%s",uuid.NewV4())
 	check:=&api.AgentServiceCheck{
-		GRPC: fmt.Sprintf("%s:%d", global.ServerConfig.Host, global.ServerConfig.Port), //这个端口号一定要改，不然容易出错
+		GRPC: fmt.Sprintf("%s:%d", global2.ServerConfig.Host, global2.ServerConfig.Port), //这个端口号一定要改，不然容易出错
 		Timeout: "5s",
 		Interval: "5s",
 		DeregisterCriticalServiceAfter: "10s",
 	}
 
-	err = register_client.Register(global.ServerConfig.Host, global.ServerConfig.Port, global.ServerConfig.Name, global.ServerConfig.Tags, serviceId,check)
+	err = register_client.Register(global2.ServerConfig.Host, global2.ServerConfig.Port, global2.ServerConfig.Name, global2.ServerConfig.Tags, serviceId,check)
 	if err != nil {
 		zap.S().Panic("服务注册失败:",err.Error())
 	}
-	zap.S().Debugf("启动服务器，端口：%d",global.ServerConfig.Port)
+	zap.S().Debugf("启动服务器，端口：%d", global2.ServerConfig.Port)
 
 
 	if err !=nil{

@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin-Jacob/cmd/favorite/global"
+	global2 "douyin-Jacob/cmd/srv/favorite/global"
 	"douyin-Jacob/dal/db"
 	proto "douyin-Jacob/proto"
 )
@@ -12,11 +12,11 @@ func (s *Favorite)DouyinFavoriteList(ctx context.Context,req *proto.DouyinFavori
 	favList := proto.DouyinFavoriteListResponse{}
 
 	user := new(db.User)
-	if err := global.DB.WithContext(ctx).First(user,req.UserId).Error;err != nil{
+	if err := global2.DB.WithContext(ctx).First(user,req.UserId).Error;err != nil{
 		return nil,err
 	}
 	videos := []db.Video{}
-	if err := global.DB.WithContext(ctx).Model(&user).Association("FavoriteVideo").Find(&videos);err != nil{
+	if err := global2.DB.WithContext(ctx).Model(&user).Association("FavoriteVideo").Find(&videos);err != nil{
 		return nil,err
 	}
 	for _, video := range videos{

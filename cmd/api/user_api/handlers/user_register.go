@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"douyin-Jacob/cmd/user_api/global"
+	global2 "douyin-Jacob/cmd/api/user_api/global"
 	middlewares "douyin-Jacob/pkg/middleware"
 	"douyin-Jacob/pkg/middleware/models"
 	"douyin-Jacob/proto"
@@ -47,7 +47,7 @@ func Register(c *gin.Context)  {
 		})
 		return
 	}
-	user,err := global.UserSrvClient.UserRegister(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRegisterRequest{
+	user,err := global2.UserSrvClient.UserRegister(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRegisterRequest{
 		Username: registerForm.UserName,
 		Password: registerForm.PassWord,
 	})
@@ -58,7 +58,7 @@ func Register(c *gin.Context)  {
 	}
 	e.Exit()
 	//去拿token和验证token
-	j := middlewares.NewJWT(global.ServerConfig.JWTInfo.SigningKey)
+	j := middlewares.NewJWT(global2.ServerConfig.JWTInfo.SigningKey)
 	cliams := models.CustomClaims{
 		ID: uint(user.UserId),
 		StandardClaims:jwt.StandardClaims{

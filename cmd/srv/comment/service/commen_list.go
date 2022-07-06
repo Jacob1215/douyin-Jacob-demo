@@ -2,14 +2,14 @@ package service
 
 import (
 	"context"
-	"douyin-Jacob/cmd/comment/global"
+	global2 "douyin-Jacob/cmd/srv/comment/global"
 	"douyin-Jacob/dal/db"
 	proto "douyin-Jacob/proto"
 )
 
 func (s *Comment)DouyinCommentList(ctx context.Context,req *proto.DouyinCommentListRequest)(*proto.DouyinCommentListResponse,error){
 	comments := []*db.Comment{}
-	err := global.DB.WithContext(ctx).Model(&db.Comment{}).Where(&db.Comment{VideoID: req.VideoId}).Find(&comments).Error
+	err := global2.DB.WithContext(ctx).Model(&db.Comment{}).Where(&db.Comment{VideoID: req.VideoId}).Find(&comments).Error
 	if err != nil{
 		return nil,err
 	}

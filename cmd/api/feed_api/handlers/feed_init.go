@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"douyin-Jacob/cmd/feed_api/global"
+	global2 "douyin-Jacob/cmd/api/feed_api/global"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -11,7 +11,6 @@ import (
 	"strconv"
 
 	"net/http"
-
 )
 
 type FeedInfo struct {
@@ -43,7 +42,7 @@ func DouyinFeed(c *gin.Context) {
 		return
 	}
 
-	videos,err := global.FeedSrvClient.DouyinFeed(context.WithValue(context.Background(),"ginContext",c),
+	videos,err := global2.FeedSrvClient.DouyinFeed(context.WithValue(context.Background(),"ginContext",c),
 	&proto.DouyinFeedRequest{
 		LatestTime: latestTime,
 		Token: feedReq.Token,

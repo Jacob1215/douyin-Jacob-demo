@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin-Jacob/cmd/comment/global"
+	global2 "douyin-Jacob/cmd/srv/comment/global"
 	"douyin-Jacob/dal/db"
 	proto "douyin-Jacob/proto"
 	"google.golang.org/grpc/codes"
@@ -19,7 +19,7 @@ func (s *Comment) DouyinCommentAction(ctx context.Context,req *proto.DouyinComme
 	}
 	if req.ActionType == 1{
 		//执行创建评论的逻辑
-		err := global.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 			//新增评论数据
 			err := tx.Create(comment).Error
 			if err != nil{
@@ -41,7 +41,7 @@ func (s *Comment) DouyinCommentAction(ctx context.Context,req *proto.DouyinComme
 	}
 	//进行删除评论操作
 	if req.ActionType == 2{
-		err := global.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 			if err := tx.First(&comment,req.CommentId).Error;err != nil{
 				return err
 			}

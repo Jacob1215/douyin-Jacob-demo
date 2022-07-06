@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"douyin-Jacob/cmd/publish_api/global"
+	global2 "douyin-Jacob/cmd/api/publish_api/global"
 	"douyin-Jacob/pkg/middleware/models"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
@@ -37,7 +37,7 @@ func GetUserVideoList (c *gin.Context)  {
 		})
 		return
 	}
-	rsp,err :=global.PublishSrvClient.UserVideoList(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinPublishListRequest{
+	rsp,err := global2.PublishSrvClient.UserVideoList(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinPublishListRequest{
 		UserId: userid,
 		Token: token,
 	})

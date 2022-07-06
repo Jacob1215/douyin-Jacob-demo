@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"douyin-Jacob/cmd/user_api/global"
+	global2 "douyin-Jacob/cmd/api/user_api/global"
 	middlewares "douyin-Jacob/pkg/middleware"
 	"douyin-Jacob/pkg/middleware/models"
 	"douyin-Jacob/proto"
@@ -40,7 +40,7 @@ func Login(c *gin.Context)  {
 		return
 	}
 	//查询用户存不存在
-	if userRsp,err  := global.UserSrvClient.GetUserInfoByName(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRequest{
+	if userRsp,err  := global2.UserSrvClient.GetUserInfoByName(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRequest{
 		Name: passwordLoginForm.UserName,
 	});err != nil {
 		if e, ok := status.FromError(err); ok {
@@ -54,7 +54,7 @@ func Login(c *gin.Context)  {
 		}
 	} else {
 		//查询了用户存不存在，现在去验证密码
-		if passRsp,passErr := global.UserSrvClient.UserLoginByName(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserLoginRequest{
+		if passRsp,passErr := global2.UserSrvClient.UserLoginByName(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserLoginRequest{
 			Password: passwordLoginForm.PassWord,
 			EncryptedPassword: userRsp.User.Password,
 		}); passErr != nil {
@@ -62,7 +62,7 @@ func Login(c *gin.Context)  {
 		} else  {
 			if passRsp.StatusCode == 0 {
 				//生成token
-				j := middlewares.NewJWT(global.ServerConfig.JWTInfo.SigningKey)
+				j := middlewares.NewJWT(global2.ServerConfig.JWTInfo.SigningKey)
 				claims := models.CustomClaims{
 					ID: uint(userRsp.User.Id),
 					StandardClaims:jwt.StandardClaims{

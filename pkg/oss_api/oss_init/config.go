@@ -1,8 +1,8 @@
 package oss_init
 
 import (
-	global2 "douyin-Jacob/cmd/api/oss_api/global"
 	"douyin-Jacob/pkg/constants"
+	"douyin-Jacob/pkg/oss_api/global"
 
 	"encoding/json"
 	"fmt"
@@ -25,28 +25,28 @@ func InitConfig()  {
 		panic(err)
 	}
 
-	if err := v.Unmarshal(global2.NacosConfig);err!=nil{
+	if err := v.Unmarshal(global.NacosConfig);err!=nil{
 		panic(err)
 	}
-	zap.S().Infof("配置信息: %v", global2.NacosConfig)
+	zap.S().Infof("配置信息: %v", global.NacosConfig)
 
 	//viper 的 动态监控变化
 	v.WatchConfig()
 	v.OnConfigChange(func(e fsnotify.Event) {
 		zap.S().Infof("配置文件产生变化：%v",e.Name)
 		_=v.ReadInConfig()
-		_=v.Unmarshal(global2.NacosConfig)
-		zap.S().Infof("配置信息：%v", global2.NacosConfig)
+		_=v.Unmarshal(global.NacosConfig)
+		zap.S().Infof("配置信息：%v", global.NacosConfig)
 	})
 	//从nacos中读取配置信息
 	sc :=[]constant.ServerConfig{
 		{
-			IpAddr: global2.NacosConfig.Host,
-			Port:   global2.NacosConfig.Port,
+			IpAddr: global.NacosConfig.Host,
+			Port:   global.NacosConfig.Port,
 		},
 	}
 	cc :=constant.ClientConfig{
-		NamespaceId:         global2.NacosConfig.Namespace, //nacos拿的。 //we can create multiple clients with different namespaceId to support multiple namespace.When namespace is public, fill in the blank string here.
+		NamespaceId:         global.NacosConfig.Namespace, //nacos拿的。 //we can create multiple clients with different namespaceId to support multiple namespace.When namespace is public, fill in the blank string here.
 		TimeoutMs:           5000,
 		NotLoadCacheAtStart: true,
 		LogDir:              constants.LogDir,
@@ -68,17 +68,17 @@ func InitConfig()  {
 	}
 	//获取配置
 	content, err := configClient.GetConfig(vo.ConfigParam{
-		DataId: global2.NacosConfig.DataId,
-		Group:  global2.NacosConfig.Group})
+		DataId: global.NacosConfig.DataId,
+		Group:  global.NacosConfig.Group})
 	if err!=nil{
 		panic(err)
 	}
 	//json转struct。
-	err = json.Unmarshal([]byte(content),&global2.ServerConfig)
+	err = json.Unmarshal([]byte(content),&global.ServerConfig)
 	if err!=nil{
 		zap.S().Fatalf("读取nacos配置失败: %s",err)
 	}
-	fmt.Println(&global2.ServerConfig)
+	fmt.Println(&global.ServerConfig)
 }
 
 

@@ -1,7 +1,7 @@
 package api_init
 
 import (
-	"douyin-Jacob/cmd/favorite_api/global"
+	global2 "douyin-Jacob/cmd/api/favorite_api/global"
 	"douyin-Jacob/pkg/tracer/otgrpc"
 	"douyin-Jacob/proto"
 	"github.com/opentracing/opentracing-go"
@@ -16,12 +16,12 @@ import (
 
 //初始化连接
 func InitSrvConn()  {
-	consulInfo := global.ServerConfig.ConsulInfo
-	zap.S().Info(global.ServerConfig)
-	zap.S().Infof("%s",global.ServerConfig.FavoriteInfo)
+	consulInfo := global2.ServerConfig.ConsulInfo
+	zap.S().Info(global2.ServerConfig)
+	zap.S().Infof("%s", global2.ServerConfig.FavoriteInfo)
 	favoriteConn, err := grpc.Dial(
 		fmt.Sprintf("consul://%s:%d/%s?wait=14s",consulInfo.Host,consulInfo.Port,
-			global.ServerConfig.FavoriteInfo.Name),
+			global2.ServerConfig.FavoriteInfo.Name),
 		grpc.WithTransportCredentials(insecure.NewCredentials()),
 		grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy": "round_robin"}`),
 		grpc.WithUnaryInterceptor(otgrpc.OpenTracingClientInterceptor(opentracing.GlobalTracer())),
@@ -31,5 +31,5 @@ func InitSrvConn()  {
 		zap.S().Fatal("[InitSrvConn]连接【用户服务失败】")
 	}
 	favoriteClient := proto.NewFavoriteSrvClient(favoriteConn)
-	global.FavoriteSrvClient = favoriteClient
+	global2.FavoriteSrvClient = favoriteClient
 }

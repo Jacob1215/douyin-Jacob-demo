@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"context"
-	"douyin-Jacob/cmd/comment_api/global"
+	global2 "douyin-Jacob/cmd/api/comment_api/global"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -62,7 +62,7 @@ func CommentAction(c *gin.Context)  {
 		return
 	}
 
-	resp,err := global.CommentSrvClient.DouyinCommentAction(context.WithValue(context.Background(),"ginContext",c),
+	resp,err := global2.CommentSrvClient.DouyinCommentAction(context.WithValue(context.Background(),"ginContext",c),
 		&proto.DouyinCommentActionRequest{
 			UserId: CommentPara.UserId,
 			Token: CommentPara.Token,

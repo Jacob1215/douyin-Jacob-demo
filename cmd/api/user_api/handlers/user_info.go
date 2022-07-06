@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"douyin-Jacob/cmd/user_api/global"
+	global2 "douyin-Jacob/cmd/api/user_api/global"
 	"douyin-Jacob/pkg/middleware/models"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
@@ -10,7 +10,6 @@ import (
 	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-
 
 	"context"
 	"net/http"
@@ -40,7 +39,7 @@ func GetUserInfo(c *gin.Context)  {
 		return
 	}
 	//获取用户信息
-	rsp,err := global.UserSrvClient.GetUserById(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRequest{
+	rsp,err := global2.UserSrvClient.GetUserById(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserRequest{
 		UserId: userid,
 		Token: token,//这个token应该是要验证的。
 	});

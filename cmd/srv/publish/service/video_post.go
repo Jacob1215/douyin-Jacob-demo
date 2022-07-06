@@ -1,9 +1,9 @@
 package service
 
 import (
-	"douyin-Jacob/cmd/oss_api/oss"
-	"douyin-Jacob/cmd/user/global"
+	global2 "douyin-Jacob/cmd/srv/user/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/oss_api/oss"
 	"douyin-Jacob/proto"
 	"fmt"
 	"github.com/gofrs/uuid"
@@ -79,7 +79,7 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 	//事务+链路追踪
 	parentSpan := opentracing.SpanFromContext(ctx)
 	postVideoSpan := opentracing.GlobalTracer().StartSpan("post_video",opentracing.ChildOf(parentSpan.Context()))
-	err = global.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+	err = global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := tx.Create(videoModel).Error
 		if err  != nil {
 			return err

@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"douyin-Jacob/cmd/relation/global"
+	global2 "douyin-Jacob/cmd/srv/relation/global"
 	"douyin-Jacob/dal/db"
 	proto "douyin-Jacob/proto"
 	"google.golang.org/grpc/codes"
@@ -13,7 +13,7 @@ import (
 func (s *Relation) DouyinRelationAction(ctx context.Context,req *proto.DouyinRelationActionRequest)(*proto.DouyinRelationActionResponse,error) {
 	//关注
 	if req.ActionType == 1{
-		err := global.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 			//新增关注数据
 			err := tx.Create(&db.Relation{UserID: req.UserId,ToUserID: req.ToUserId}).Error
 			if err != nil{
@@ -43,7 +43,7 @@ func (s *Relation) DouyinRelationAction(ctx context.Context,req *proto.DouyinRel
 	}
 	//删除关注
 	if req.ActionType == 2{
-		err := global.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		err := global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 			//删除关注数据
 			relation := new(db.Relation)
 			if err := tx.Where("user_id = ? AND to_user_id=?",req.UserId,req.ToUserId).First(&relation).Error;err != nil{

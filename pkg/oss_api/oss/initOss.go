@@ -1,7 +1,7 @@
 package oss
 
 import (
-	global2 "douyin-Jacob/cmd/api/oss_api/global"
+	"douyin-Jacob/pkg/oss_api/global"
 	"github.com/aliyun/aliyun-oss-go-sdk/oss"
 	"go.uber.org/zap"
 	"io"
@@ -10,10 +10,10 @@ import (
 
 var (
 	OssClient *oss.Client
-	endpoint = global2.ServerConfig.OssInfo.EndPoint
-	OssAccessKeyId = global2.ServerConfig.OssInfo.ApiKey
-	OssSecret = global2.ServerConfig.OssInfo.ApiSecrect
-	OssVideoBucketName = global2.ServerConfig.OssInfo.UploadDir
+	endpoint = global.ServerConfig.OssInfo.EndPoint
+	OssAccessKeyId = global.ServerConfig.OssInfo.ApiKey
+	OssSecret = global.ServerConfig.OssInfo.ApiSecrect
+	OssVideoBucketName = global.ServerConfig.OssInfo.UploadDir
 )
 
 

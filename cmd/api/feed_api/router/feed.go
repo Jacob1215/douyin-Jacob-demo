@@ -1,9 +1,8 @@
 package router
 
 import (
-	"douyin-Jacob/cmd/feed_api/global"
-	"douyin-Jacob/cmd/feed_api/handlers"
-
+	global2 "douyin-Jacob/cmd/api/feed_api/global"
+	handlers2 "douyin-Jacob/cmd/api/feed_api/handlers"
 	middlewares "douyin-Jacob/pkg/middleware"
 	"douyin-Jacob/pkg/tracer"
 	"github.com/gin-gonic/gin"
@@ -27,10 +26,10 @@ func InitRouters() (c *gin.Engine) {
 }
 
 func InitFeedRouter(Router *gin.RouterGroup)  {//注册用户相关的路由
-	FeedRouter := Router.Group("/feed").Use(tracer.Trace(global.ServerConfig.JaegerInfo.Host, global.ServerConfig.JaegerInfo.Port,global.ServerConfig.JaegerInfo.Name))
+	FeedRouter := Router.Group("/feed").Use(tracer.Trace(global2.ServerConfig.JaegerInfo.Host, global2.ServerConfig.JaegerInfo.Port, global2.ServerConfig.JaegerInfo.Name))
 	zap.S().Info("配置feed相关的url")
 	{
-		FeedRouter.GET("/",middlewares.JWTAuth(global.ServerConfig.JWTInfo.SigningKey),
-			handlers.DouyinFeed)//先验证,再给Info
+		FeedRouter.GET("/",middlewares.JWTAuth(global2.ServerConfig.JWTInfo.SigningKey),
+			handlers2.DouyinFeed) //先验证,再给Info
 	}
 }

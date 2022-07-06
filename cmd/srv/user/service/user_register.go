@@ -2,7 +2,7 @@ package service
 
 import (
 	"crypto/sha512"
-	"douyin-Jacob/cmd/user/global"
+	global2 "douyin-Jacob/cmd/srv/user/global"
 	"douyin-Jacob/dal/db"
 	"douyin-Jacob/proto"
 	"github.com/opentracing/opentracing-go"
@@ -22,7 +22,7 @@ func (s *UserServer)UserRegister(ctx context.Context,req *proto.DouyinUserRegist
 	var user db.User
 	parentSpan := opentracing.SpanFromContext(ctx)
 	userRegisterSpan := opentracing.GlobalTracer().StartSpan("user_register",opentracing.ChildOf(parentSpan.Context()))
-	result := global.DB.Where(&db.User{UserName: req.Username}).First(&user)
+	result := global2.DB.Where(&db.User{UserName: req.Username}).First(&user)
 	if result.RowsAffected == 1{
 		return nil,status.Errorf(codes.AlreadyExists,"用户已存在")
 	}
@@ -35,7 +35,7 @@ func (s *UserServer)UserRegister(ctx context.Context,req *proto.DouyinUserRegist
 	options := &password.Options{16,100,32,sha512.New}
 	salt,encodedPwd := password.Encode(req.Password,options)
 	user.Password = fmt.Sprintf("$pbkdf2-sha512$%s$%s", salt, encodedPwd)
-	result = global.DB.Create(&user)
+	result = global2.DB.Create(&user)
 
 	userRegisterSpan.Finish()
 
