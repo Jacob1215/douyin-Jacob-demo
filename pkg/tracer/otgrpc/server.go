@@ -23,7 +23,7 @@ import (
 // SpanContext.
 //
 // Root or not, the server Span will be embedded in the context.Context for the
-// application-specific gRPC handler(s) to access.
+// application-specific gRPC handlers(s) to access.
 func OpenTracingServerInterceptor(tracer opentracing.Tracer, optFuncs ...Option) grpc.UnaryServerInterceptor {
 	otgrpcOpts := newOptions()
 	otgrpcOpts.apply(optFuncs...)
@@ -85,7 +85,7 @@ func OpenTracingServerInterceptor(tracer opentracing.Tracer, optFuncs ...Option)
 // SpanContext.
 //
 // Root or not, the server Span will be embedded in the context.Context for the
-// application-specific gRPC handler(s) to access.
+// application-specific gRPC handlers(s) to access.
 func OpenTracingStreamServerInterceptor(tracer opentracing.Tracer, optFuncs ...Option) grpc.StreamServerInterceptor {
 	otgrpcOpts := newOptions()
 	otgrpcOpts.apply(optFuncs...)

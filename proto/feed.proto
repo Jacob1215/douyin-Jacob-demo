@@ -1,0 +1,34 @@
+syntax = "proto3";
+package feed;
+option go_package=".;proto";
+
+import "proto/user.proto";
+
+service FeedSrv{
+
+  rpc douyin_feed(douyin_feed_request) returns (douyin_feed_respones);//视频投稿
+}
+
+message douyin_feed_request {
+  int64 latest_time = 1;
+  string token = 2;
+}
+
+message douyin_feed_respones{
+  int32 status_code =1;
+  string status_msg =2;
+  repeated Video video_list =3;
+  int64 next_time =4;
+}
+
+message Video{
+  int64 id = 1;
+  user.User author = 2;
+  string  play_url=3;
+  string  cover_url =4;
+  int64  favorite_count =5;//点赞
+  int64  comment_count =6;//评论总数
+  bool is_favorite = 7; // true-已点赞，false-未点赞
+  string title = 8;//视频标题
+}
+

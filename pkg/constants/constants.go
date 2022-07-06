@@ -16,11 +16,25 @@ const (
 	CPURateLimit    float64 = 80.0
 	DefaultLimit            = 10
 
-	SrvConfigFileName =  "cmd/user/douyin-debug.yaml"
+	UserSrvConfigFileName =  "cmd/user/douyin-debug.yaml"
 	PubSrvConfigFileName = "cmd/publish/douyin-debug.yaml"
-	ApiConfigFileName =  "cmd/user_api/douyin-debug.yaml"
+	UserApiConfigFileName =  "cmd/user_api/douyin-debug.yaml"
 	PubApiConfigFileName = "cmd/publish_api/douyin-debug.yaml"
+	OssApiConfigFileName = "cmd/oss_api/douyin-debug.yaml"
+	FeedSrvConfigFileName ="cmd/feed/douyin-debug.yaml"
+	FeedApiConfigFileName ="cmd/feed_api/douyin-debug.yaml"
+	FavoriteSrvConfigFileName = "cmd/favorite/douyin-debug.yaml"
+	FavoriteApiConfigFileName = "cmd/favorite_api/douyin-debug.yaml"
+	CommentSrvConfigFileName ="cmd/comment/douyin-debug.yaml"
+	CommentApiConfigFileName = "cmd/comment_api/douyin-debug.yaml"
+	RelationSrvConfigFileName = "cmd/relation/douyin-debug.yaml"
+	RelationApiConfigFileName = "cmd/relation_api/douyin-debug.yaml"
+
+
+
+
 	LogDir = "tmp/naocs/log"
 	CacheDir = "tmp/naocs/cache"
 	LogLevel = "debug"
+	Limit = 30
 )

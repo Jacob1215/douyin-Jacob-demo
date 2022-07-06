@@ -1,0 +1,8 @@
+host: '192.168.1.101'
+port: 8848
+namespace: 'e72a0bed-78f9-495e-a4e2-dee1742e0e94'
+user: 'nacos'
+password: 'nacos'
+dataid: 'douyin-user-api.json'
+group: 'dev'
+

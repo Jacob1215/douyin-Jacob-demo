@@ -1,0 +1,46 @@
+syntax = "proto3";
+package relation;
+option go_package=".;proto";
+
+import "proto/user.proto";
+service RelationSrv{
+  //关注操作
+  rpc douyin_relation_action(douyin_relation_action_request) returns (douyin_relation_action_response);
+  //关注列表
+  rpc douyin_relation_follow(douyin_relation_follow_list_request)returns(douyin_relation_follow_list_response);
+  //粉丝列表
+  rpc douyin_relation_follower(douyin_relation_follower_list_request)returns(douyin_relation_follower_list_response);
+}
+message douyin_relation_action_request{
+  int64 user_id =1;
+  string token =2;
+  int64 to_user_id =3;
+  int32 action_type=4;
+}
+message douyin_relation_action_response{
+  int32 status_code=1;
+  string status_msg=2;
+}
+
+message douyin_relation_follow_list_request{
+  int64 user_id =1;
+  string token = 2;
+}
+message douyin_relation_follow_list_response{
+  int32 status_code =1;
+  string status_msg=2;
+  repeated user.User user_list =3;
+}
+
+
+message douyin_relation_follower_list_request{
+  int64 user_id =1;
+  string token =2;
+}
+message douyin_relation_follower_list_response{
+  int32  status_code =1;
+  string status_msg = 2;
+  repeated user.User user_list =3;
+}
+
+
