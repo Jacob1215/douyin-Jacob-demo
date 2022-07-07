@@ -3,9 +3,11 @@ package service
 import (
 	global2 "douyin-Jacob/cmd/srv/user/global"
 	"douyin-Jacob/dal/db"
-	oss2 "douyin-Jacob/pkg/oss"
+	"douyin-Jacob/pkg/oss"
+
 	"douyin-Jacob/proto"
 	"fmt"
+
 	"github.com/gofrs/uuid"
 	"github.com/opentracing/opentracing-go"
 	ffmpeg "github.com/u2takey/ffmpeg-go"
@@ -21,8 +23,9 @@ import (
 
 func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPublishActionRequest)(*proto.DouyinPublishActionResponse,error) {
 	//TODO 这里要做对象存储，还要做事务。
-	ossVideoBucketName := oss2.OssVideoBucketName
 
+	//InitOss
+	ossclient := oss.Init(global2.ServerConfig.OssInfo.EndPoint,global2.ServerConfig.OssInfo.AccessKeyId,global2.ServerConfig.OssInfo.ApiSecrect)
 
 	reader := bytes.NewReader(request.Data)
 	u2,err := uuid.NewV4() //给视频文件加编号
@@ -31,12 +34,12 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 	}
 	fileName := u2.String()+"."+"mp4"
 	//上传视频//这里想不明白。
-	err = oss2.UploadFile(ossVideoBucketName,fileName,reader)
+	err = oss.UploadFile(ossclient,global2.ServerConfig.OssInfo.UploadDir,fileName,reader)
 	if err != nil{
 		return nil, err
 	}
 	//获取视频连接
-	urlDate,err := oss2.GetFileUrl(ossVideoBucketName,fileName)
+	urlDate,err := oss.GetFileUrl(ossclient,global2.ServerConfig.OssInfo.UploadDir,fileName)
 	playUrl := strings.Split(string(urlDate),"?")[0]
 	if err != nil{
 		return nil, err
@@ -53,12 +56,12 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 	}
 	//上传封面
 	coverReader := bytes.NewReader(coverData)
-	err = oss2.UploadFile(ossVideoBucketName,coverPath,coverReader)
+	err = oss.UploadFile(ossclient,global2.ServerConfig.OssInfo.UploadDir,coverPath,coverReader)
 	if err != nil{
 		return nil, err
 	}
 	//获取封面连接
-	coverUrl,err := oss2.GetFileUrl(ossVideoBucketName,coverPath)
+	coverUrl,err := oss.GetFileUrl(ossclient,global2.ServerConfig.OssInfo.UploadDir,coverPath)
 	if err != nil{
 		return nil, err
 	}
@@ -73,7 +76,6 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 		FavCount: 0,
 		ComCount: 0,
 		Title: request.Title,
-		Data: request.Data,
 	}
 
 	//事务+链路追踪

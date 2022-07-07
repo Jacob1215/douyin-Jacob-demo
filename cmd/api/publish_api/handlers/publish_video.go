@@ -2,7 +2,8 @@ package handlers
 
 import (
 	global2 "douyin-Jacob/cmd/api/publish_api/global"
-	"douyin-Jacob/pkg/middleware/models"
+
+
 	"douyin-Jacob/proto"
 
 	sentinel "github.com/alibaba/sentinel-golang/api"
@@ -16,20 +17,15 @@ import (
 	"net/http"
 )
 
-type PublishVideoInfo struct {
-	Data string `form:"data" json:"data" binding:"required"`
-	Token string `form:"token" json:"token" binding:"required"`
-	Title string `form:"title" json:"title" binding:"required,max=32"`
-}
-
 func PublishVideo(c *gin.Context)  {
-	publishvideo := PublishVideoInfo{}
-	claims := models.CustomClaims{}
 
-	if err := c.ShouldBindJSON(&publishvideo);err != nil{
-		HandleValidatorError(c,err)
-		return
+	title := c.PostForm("title")
+	token := c.PostForm("token")
+	claims,err := Jwt.ParseToken(token)
+	if err != nil{
+		SendResponseToHttp(err,c,nil)
 	}
+
 	data,_,err := c.Request.FormFile("data")
 	if err != nil{
 		SendResponseToHttp(err,c,nil)
@@ -53,15 +49,13 @@ func PublishVideo(c *gin.Context)  {
 		return
 	}
 
-	zap.S().Infof("%s",publishvideo.Title)
-
 	_,err = global2.PublishSrvClient.PostVideo(context.WithValue(context.Background(),"ginContext",c), //配置tracing
 		&proto.DouyinPublishActionRequest{
 		User: &proto.User{
-			Id:int64(claims.ID),
+			Id:int64(claims.Id),
 		},
-		Token: publishvideo.Token,
-		Title: publishvideo.Title,
+		Token: token,
+		Title: title,
 		Data: buf.Bytes(),
 	})
 	if err !=nil{

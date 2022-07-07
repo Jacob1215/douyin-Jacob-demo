@@ -1,7 +1,7 @@
-package middlewares
+package jwt
 
 import (
-	"douyin-Jacob/pkg/middleware/models"
+	"douyin-Jacob/pkg/jwt/models"
 
 	"errors"
 	"github.com/dgrijalva/jwt-go"
@@ -41,7 +41,7 @@ func JWTAuth(SignKey string) gin.HandlerFunc {
 			return
 		}
 		c.Set("claims", claims)
-		c.Set("userId", claims.ID)
+		c.Set("userId", claims.Id)
 		c.Next()
 	}
 }

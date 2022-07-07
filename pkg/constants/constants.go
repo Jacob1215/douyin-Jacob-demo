@@ -16,13 +16,6 @@ const (
 	RelationSrvConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/srv/relation/douyin-debug.yaml"
 	RelationApiConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/api/relation_api/douyin-debug.yaml"
 
-	//OSS
-	EndPoint = "http://oss-cn-chengdu.aliyuncs.com"
-	AccessKeyId = "LTAI5t8TpK5cKnT8Gaq32b5T"
-	Secrect = "y2PIrU9eGaOLSxqpUnAP6s3yiB1DqN"
-	Host = "http://jacob-files.oss-cn-chengdu.aliyuncs.com"
-	HallbackUrl = "http://kcvn2d8csc.51xd.pub/oss/v1/oss/callback"
-	UploadDir = "jacob-files"
 
 
 

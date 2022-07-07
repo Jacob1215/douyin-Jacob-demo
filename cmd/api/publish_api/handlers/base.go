@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"douyin-Jacob/cmd/api/publish_api/global"
+	"douyin-Jacob/pkg/jwt"
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
 	"google.golang.org/grpc/codes"
@@ -9,10 +11,16 @@ import (
 	"net/http"
 )
 
+var (Jwt *jwt.JWT)
+
 type Response struct {
 	StatusCode int64 `json:"status_code"`
 	StatusMsg string `json:"status_msg"`
 	Data interface{} `json:"data"`
+}
+
+func InitJwt()  {
+	Jwt = jwt.NewJWT(global.ServerConfig.JWTInfo.SigningKey)
 }
 
 //SendResponseToHttp send the success and errors to http

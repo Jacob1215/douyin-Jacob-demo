@@ -3,7 +3,7 @@ package router
 import (
 	global2 "douyin-Jacob/cmd/api/publish_api/global"
 	handlers2 "douyin-Jacob/cmd/api/publish_api/handlers"
-	middlewares "douyin-Jacob/pkg/middleware"
+	middlewares "douyin-Jacob/pkg/jwt"
 	"douyin-Jacob/pkg/tracer"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"

@@ -3,7 +3,6 @@ package publish_init
 import (
 	global2 "douyin-Jacob/cmd/srv/publish/global"
 	"douyin-Jacob/pkg/constants"
-
 	"encoding/json"
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
@@ -67,5 +66,4 @@ func InitConfig()  {
 		zap.S().Fatalf("读取nacos配置失败：%s",err)
 	}
 	fmt.Println(&global2.ServerConfig)
-
 }

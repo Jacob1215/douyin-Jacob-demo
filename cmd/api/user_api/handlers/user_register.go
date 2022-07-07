@@ -2,8 +2,8 @@ package handlers
 
 import (
 	global2 "douyin-Jacob/cmd/api/user_api/global"
-	middlewares "douyin-Jacob/pkg/middleware"
-	"douyin-Jacob/pkg/middleware/models"
+	middlewares "douyin-Jacob/pkg/jwt"
+	"douyin-Jacob/pkg/jwt/models"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -63,7 +63,7 @@ func Register(c *gin.Context)  {
 		ID: uint(user.UserId),
 		StandardClaims:jwt.StandardClaims{
 			NotBefore: time.Now().Unix(),	//签名的生效时间
-			ExpiresAt: time.Now().Unix()+60*60*24*30, // 30天过期
+			ExpiresAt: time.Now().Unix()+60*60*24*180, // 30天过期
 			Issuer: "Jacob", //哪个机构，这个目前写的我的名字。
 		},
 	}

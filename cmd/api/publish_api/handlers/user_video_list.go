@@ -3,7 +3,7 @@ package handlers
 import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/publish_api/global"
-	"douyin-Jacob/pkg/middleware/models"
+	"douyin-Jacob/pkg/jwt/models"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -27,7 +27,7 @@ func GetUserVideoList (c *gin.Context)  {
 	userInfo := models.CustomClaims{}
 	userid,_ :=strconv.ParseInt(c.Query("user_id"),10,64)
 	token := c.Query("token")
-	zap.S().Info(userInfo.ID,userInfo.Token)
+	zap.S().Info(userInfo.Id,userInfo.AuthorityId)
 	//配置熔断限流。
 	e,b  := sentinel.Entry("publish_video",sentinel.WithTrafficType(base.Inbound))
 	if b !=nil{

@@ -1,6 +1,6 @@
 {
   "name": "publish-srv",
-  "host": "192.168.1.104",
+  "host": "192.168.1.110",
   "tags":["douyin","jacob","publish","srv"],
   "mysql": {
     "host": "192.168.1.101",

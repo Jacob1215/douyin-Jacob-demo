@@ -97,7 +97,7 @@ type MysqlConfig struct {
 
 type OssConfig struct {
 	EndPoint string `mapstructure:"endpoint" json:"endpoint"`
-	ApiKey string `mapstructure:"accessKeyId" json:"accessKeyId"`
+	AccessKeyId string `mapstructure:"accessKeyId" json:"accessKeyId"`
 	ApiSecrect string `mapstructure:"secrect" json:"secrect"`
 	Host string `mapstructure:"host" json:"host"`
 	CallBackUrl string `mapstructure:"callback_url" json:"callback_url"`

@@ -1,8 +1,10 @@
 package api_init
 
 import (
+	"douyin-Jacob/cmd/api/publish_api/handlers"
 	"douyin-Jacob/pkg/initialize"
 )
+
 
 func InitAll()  {
 	//初始化日志
@@ -14,5 +16,7 @@ func InitAll()  {
 	//初始化sentinel
 	InitSentinel()
 	//初始化jaeger
+	handlers.InitJwt()
 	//tracer.Trace()
 }
+
