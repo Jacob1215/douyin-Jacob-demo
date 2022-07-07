@@ -3,7 +3,7 @@ package service
 import (
 	global2 "douyin-Jacob/cmd/srv/user/global"
 	"douyin-Jacob/dal/db"
-	"douyin-Jacob/pkg/oss_api/oss"
+	oss2 "douyin-Jacob/pkg/oss"
 	"douyin-Jacob/proto"
 	"fmt"
 	"github.com/gofrs/uuid"
@@ -21,7 +21,7 @@ import (
 
 func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPublishActionRequest)(*proto.DouyinPublishActionResponse,error) {
 	//TODO 这里要做对象存储，还要做事务。
-	ossVideoBucketName := oss.OssVideoBucketName
+	ossVideoBucketName := oss2.OssVideoBucketName
 
 
 	reader := bytes.NewReader(request.Data)
@@ -31,12 +31,12 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 	}
 	fileName := u2.String()+"."+"mp4"
 	//上传视频//这里想不明白。
-	err = oss.UploadFile(ossVideoBucketName,fileName,reader)
+	err = oss2.UploadFile(ossVideoBucketName,fileName,reader)
 	if err != nil{
 		return nil, err
 	}
 	//获取视频连接
-	urlDate,err := oss.GetFileUrl(ossVideoBucketName,fileName)
+	urlDate,err := oss2.GetFileUrl(ossVideoBucketName,fileName)
 	playUrl := strings.Split(string(urlDate),"?")[0]
 	if err != nil{
 		return nil, err
@@ -53,12 +53,12 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 	}
 	//上传封面
 	coverReader := bytes.NewReader(coverData)
-	err = oss.UploadFile(ossVideoBucketName,coverPath,coverReader)
+	err = oss2.UploadFile(ossVideoBucketName,coverPath,coverReader)
 	if err != nil{
 		return nil, err
 	}
 	//获取封面连接
-	coverUrl,err := oss.GetFileUrl(ossVideoBucketName,coverPath)
+	coverUrl,err := oss2.GetFileUrl(ossVideoBucketName,coverPath)
 	if err != nil{
 		return nil, err
 	}

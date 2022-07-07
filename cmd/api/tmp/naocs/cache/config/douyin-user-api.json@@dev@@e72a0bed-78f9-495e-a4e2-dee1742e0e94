@@ -1,0 +1,23 @@
+{
+  "host": "192.168.1.110",
+  "name": "user-web",
+  "port": 8021,
+  "tags": ["douyin","jacob","user","web"],
+  "user_srv": {
+    "host": "192.168.1.101",
+    "port": 8848,
+    "name": "user-srv"
+  },
+  "jwt": {
+    "key": "h2iY6mfW2VVKBH9s"
+  },
+  "consul": {
+    "host": "192.168.1.101",
+    "port": 8500
+  },
+  "jaeger": {
+    "host": "192.168.1.101",
+    "port": 6831,
+    "name": "douyin-user-api"
+  }
+}

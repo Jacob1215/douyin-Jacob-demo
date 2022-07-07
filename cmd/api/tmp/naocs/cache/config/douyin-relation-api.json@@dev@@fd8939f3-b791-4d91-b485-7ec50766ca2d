@@ -1,0 +1,22 @@
+{
+  "host": "192.168.1.107",
+  "name": "relation-web",
+  "tags": ["douyin","jacob","relation","web"],
+  "relation_srv": {
+    "host": "192.168.1.101",
+    "port": 8848,
+    "name": "relation-srv"
+  },
+  "jwt": {
+    "key": "h2iY6mfW2VVKBH9s"
+  },
+  "consul": {
+    "host": "192.168.1.101",
+    "port": 8500
+  },
+  "jaeger": {
+    "host": "192.168.1.101",
+    "port": 6831,
+    "name": "douyin-relation-api"
+  }
+}
