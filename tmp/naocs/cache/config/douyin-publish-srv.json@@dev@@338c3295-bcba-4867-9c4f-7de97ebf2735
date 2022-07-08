@@ -17,5 +17,13 @@
     "host": "192.168.1.101",
     "port": 6831,
     "name": "douyin-publish-srv"
+  },
+  "oss":{
+      "endpoint":"http://oss-cn-chengdu.aliyuncs.com",
+      "accessKeyId":"LTAI5t8TpK5cKnT8Gaq32b5T",
+      "secrect":"y2PIrU9eGaOLSxqpUnAP6s3yiB1DqN",
+      "host":"http://jacob-files.oss-cn-chengdu.aliyuncs.com",
+      "callback_url":"http://kcvn2d8csc.51xd.pub/oss/v1/oss/callback",
+      "upload_dir":"douyin-jacob-videos"
   }
 }

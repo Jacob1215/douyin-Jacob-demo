@@ -4,7 +4,7 @@ import (
 	"douyin-Jacob/cmd/api/publish_api/global"
 	"douyin-Jacob/pkg/jwt"
 	"github.com/gin-gonic/gin"
-	"github.com/go-playground/validator/v10"
+	"go.uber.org/zap"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 
@@ -20,6 +20,7 @@ type Response struct {
 }
 
 func InitJwt()  {
+	zap.S().Info(global.ServerConfig.JWTInfo.SigningKey)
 	Jwt = jwt.NewJWT(global.ServerConfig.JWTInfo.SigningKey)
 }
 
@@ -67,18 +68,4 @@ func SendResponseToHttp(err error, c *gin.Context,data interface{}) {
 	})
 }
 
-//validator error
-func HandleValidatorError(c *gin.Context, err error) {
-	errs, ok := err.(validator.ValidationErrors)
-	if !ok {
-		c.JSON(http.StatusOK, Response{
-			StatusCode: http.StatusOK,
-			StatusMsg: err.Error(),
-		})
-	}
-	c.JSON(http.StatusBadRequest, Response{
-		StatusCode: http.StatusBadRequest,
-		StatusMsg: errs.Error(),
-	})
-}
 

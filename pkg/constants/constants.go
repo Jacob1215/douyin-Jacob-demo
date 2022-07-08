@@ -6,7 +6,6 @@ const (
 	PubSrvConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/srv/publish/douyin-debug.yaml"
 	UserApiConfigFileName =  "D:/gopath/src/douyin-Jacob/cmd/api/user_api/douyin-debug.yaml"
 	PubApiConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/api/publish_api/douyin-debug.yaml"
-	OssApiConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/api/oss/douyin-debug.yaml"
 	FeedSrvConfigFileName ="D:/gopath/src/douyin-Jacob/cmd/srv/feed/douyin-debug.yaml"
 	FeedApiConfigFileName ="D:/gopath/src/douyin-Jacob/cmd/api/feed_api/douyin-debug.yaml"
 	FavoriteSrvConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/srv/favorite/douyin-debug.yaml"
