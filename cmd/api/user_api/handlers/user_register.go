@@ -63,7 +63,7 @@ func Register(c *gin.Context)  {
 		Id: user.UserId,
 		StandardClaims:jwt.StandardClaims{
 			NotBefore: time.Now().Unix(),	//签名的生效时间
-			ExpiresAt: time.Now().Unix()+60*60*24*180, // 30天过期
+			ExpiresAt: time.Now().Unix()+60*60*24*30, // 30天过期
 			Issuer: "Jacob", //哪个机构，这个目前写的我的名字。
 		},
 	}

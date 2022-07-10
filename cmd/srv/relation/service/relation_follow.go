@@ -17,8 +17,8 @@ func (s *Relation)DouyinRelationFollow(ctx context.Context, req *proto.DouyinRel
 	followUser := []*db.User{}
 	for _,user := range followUserList{
 		var user2 *db.User
-		if  err = global2.DB.WithContext(ctx).First(&user2,user.ID).Error;err != nil{
-			return nil,errno.ErrFindDate
+		if  err = global2.DB.WithContext(ctx).First(&user2,user.ToUserID).Error;err != nil{
+			return nil,errno.ErrFirstDate
 		}
 		followUser =append(followUser,user2)
 	}

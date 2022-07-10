@@ -6,6 +6,5 @@ type Comment struct {
 	VideoID int64 `gorm:"index:idx_videoid;not null"`
 	User User `gorm:"foreignkey:UserID"`
 	UserID int64 `gorm:"index:idx_userid;not null"`
-
 	Content string `gorm:"type:varchar(255);not null"`
 }

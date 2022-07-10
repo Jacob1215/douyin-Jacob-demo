@@ -17,9 +17,11 @@ func (s *Favorite)DouyinFavoriteList(ctx context.Context,req *proto.DouyinFavori
 		return nil,errno.ErrUserNotFound
 	}
 	videos := []db.Video{}
+
 	if err := global2.DB.WithContext(ctx).Model(&user).Association("FavoriteVideo").Find(&videos);err != nil{
 		return nil,err
 	}
+
 	for _, video := range videos{
 		favList.VideoList = append(favList.VideoList,&proto.Video{
 			Author: &proto.User{
@@ -38,9 +40,13 @@ func (s *Favorite)DouyinFavoriteList(ctx context.Context,req *proto.DouyinFavori
 			Title: video.Title,
 		})
 	}
+	Statusmsg:= "get user fav list successed"
+	if len(videos)==0{
+		Statusmsg = "user fav list is null"
+	}
 	return &proto.DouyinFavoriteListResponse{
 		StatusCode: 0,
-		StatusMsg: "get user fav list successed",
+		StatusMsg: Statusmsg,
 		VideoList: favList.VideoList,
 	},nil
 }

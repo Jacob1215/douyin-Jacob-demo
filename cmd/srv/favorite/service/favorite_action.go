@@ -39,7 +39,12 @@ func (s *Favorite) DouyinFavoriteAction(ctx context.Context, req *proto.DouyinFa
 		if err != nil {
 			return nil, err
 		}
+		return &proto.DouyinFavoriteActionResponse{
+			StatusCode: 0,
+			StatusMsg: "fav action successed",
+		},nil
 	}
+
 	//取消点赞
 	if req.ActionType == 2{
 		err := global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
@@ -73,7 +78,7 @@ func (s *Favorite) DouyinFavoriteAction(ctx context.Context, req *proto.DouyinFa
 	}
 	return &proto.DouyinFavoriteActionResponse{
 		StatusCode: 0,
-		StatusMsg: "fav action successed",
+		StatusMsg: "unfav action successed",
 	},nil
 }
 

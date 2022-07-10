@@ -9,27 +9,20 @@ import (
 	"github.com/alibaba/sentinel-golang/core/base"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 type CommentListParam struct {
-	Token   string `json:"token,omitempty"`    // 用户鉴权token
-	VideoId int64  `json:"video_id,omitempty"` // 视频id
+	Token   string `form:"token" json:"token,omitempty"`    // 用户鉴权token
+	VideoId int64  `form:"video_id" json:"video_id,omitempty" binding:"required"` // 视频id
 }
 
 func CommentList(c *gin.Context)  {
-	var comListPara CommentListParam
-	video_id,err := strconv.Atoi(c.Query("video_id"))
-	if err != nil{
-		SendHttpResponse(errno.ErrHttpAtoiFail,c)
+	comListPara := CommentListParam{}
+	if err := c.ShouldBind(&comListPara);err !=nil{
+		SendHttpResponse(errno.ErrHttpBind,c)
 		return
 	}
-	comListPara.VideoId = int64(video_id)
-	comListPara.Token = c.Query("token")
-	if len(comListPara.Token) == 0 || comListPara.VideoId < 0 {
-		SendHttpResponse(errno.ErrHttpTokenInvalid,c)
-		return
-	}
+
 	//配置熔断限流。
 	sen,b  := sentinel.Entry("favorite_action",sentinel.WithTrafficType(base.Inbound))
 	if b !=nil{
@@ -43,7 +36,6 @@ func CommentList(c *gin.Context)  {
 
 	resp,err := global2.CommentSrvClient.DouyinCommentList(context.WithValue(context.Background(),"ginContext",c),
 		&proto.DouyinCommentListRequest{
-			Token: comListPara.Token,
 			VideoId: comListPara.VideoId,
 		})
 	if err != nil{

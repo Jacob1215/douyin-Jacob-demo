@@ -74,8 +74,13 @@ func (s *Relation) DouyinRelationAction(ctx context.Context,req *proto.DouyinRel
 			return nil, err
 		}
 	}
+	msg := "relation action successed"
+	if req.ActionType == 2{
+		msg = "delete relation action successed"
+	}
+
 	return &proto.DouyinRelationActionResponse{
 		StatusCode: 0,
-		StatusMsg:  "relation Action Successed",
+		StatusMsg:  msg,
 	},nil
 }

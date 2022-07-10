@@ -23,9 +23,7 @@ func (s *UserServer)UserRegister(ctx context.Context,req *proto.DouyinUserRegist
 	if result.RowsAffected == 1{
 		return nil,errno.ErrUserAlreadyExist
 	}
-	if result.Error !=nil{
-		return nil,errno.ErrDatabase
-	}
+
 	user.UserName = req.Username
 	user.FollowCount = 0
 	user.FollowerCount = 0
@@ -35,7 +33,9 @@ func (s *UserServer)UserRegister(ctx context.Context,req *proto.DouyinUserRegist
 	salt,encodedPwd := password.Encode(req.Password,options)
 	user.Password = fmt.Sprintf("$pbkdf2-sha512$%s$%s", salt, encodedPwd)
 	result = global2.DB.Create(&user)
-
+	if result.Error != nil{
+		return nil,errno.ErrCreateModelErr
+	}
 	userRegisterSpan.Finish()
 
 
@@ -43,8 +43,6 @@ func (s *UserServer)UserRegister(ctx context.Context,req *proto.DouyinUserRegist
 		StatusCode: 0,
 		StatusMsg: "注册成功",
 		UserId: user.ID,
-
 	}
 	return userInfo,nil
-
 }

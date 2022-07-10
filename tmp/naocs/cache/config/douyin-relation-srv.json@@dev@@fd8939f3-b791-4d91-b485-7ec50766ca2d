@@ -1,6 +1,6 @@
 {
   "name": "relation-srv",
-  "host": "192.168.1.107",
+  "host": "192.168.1.110",
   "tags":["douyin","jacob","relation","srv"],
   "mysql": {
     "host": "192.168.1.101",

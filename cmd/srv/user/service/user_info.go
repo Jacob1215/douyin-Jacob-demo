@@ -33,6 +33,7 @@ func (s *UserServer)GetUserInfoByName(ctx context.Context,req *proto.DouyinUserR
 			FollowCount: user.FollowCount,
 			FollowerCount: user.FollowerCount,
 			IsFollow: user.IsFollow,
+			Password: user.Password,
 		},
 	}
 	return &userInfoRsp,nil
@@ -61,6 +62,7 @@ func (s *UserServer)GetUserById(ctx context.Context,req *proto.DouyinUserRequest
 			FollowCount: user.FollowCount,
 			FollowerCount: user.FollowerCount,
 			IsFollow: user.IsFollow,
+			Password: user.Password,
 		},
 	}
 	return &userInfoRsp,nil

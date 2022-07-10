@@ -4,47 +4,40 @@ import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/favorite_api/global"
 	"douyin-Jacob/pkg/errno"
+	"douyin-Jacob/pkg/jwt/models"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"net/http"
-	"strconv"
 )
 // 点赞操作 handlers 输入参数
 type FavoriteActionParam struct {
-	UserId     int64  `json:"user_id,omitempty"`     // 用户id
-	Token      string `json:"token,omitempty"`       // 用户鉴权token
-	VideoId    int64  `json:"video_id,omitempty"`    // 视频id
-	ActionType int32  `json:"action_type,omitempty"` // 1-点赞，2-取消点赞
+	UserId     int64  ` form:"user_id" json:"user_id,omitempty" binding:"required"`     // 用户id
+	Token      string ` form:"token" json:"token,omitempty"`       // 用户鉴权token
+	VideoId    int64  ` form:"video_id" json:"video_id,omitempty" binding:"required"`    // 视频id
+	ActionType int32  ` form:"action_type" json:"action_type,omitempty" binding:"required"` // 1-点赞，2-取消点赞
 }
 func FavoriteAction(c *gin.Context)  {
-	var FavActionPar FavoriteActionParam
-	token := c.Query("token")
-	video_id := c.Query("video_id")
-	action_type := c.Query("action_type")
-	user_id := c.Query("user_id")
+	claims,_ := c.Get("claims")
+	currentUser := claims.(*models.CustomClaims)
 
-	video,err := strconv.Atoi(video_id)
-	if err != nil{
-		SendHttpResponse(errno.ErrHttpAtoiFail,c)
+	FavActionPar :=  FavoriteActionParam{}
+	if err := c.ShouldBind(&FavActionPar);err != nil{
+		HandleValidatorError(c,err)
 		return
 	}
-	action,err := strconv.Atoi(action_type)
-	if err != nil{
-		SendHttpResponse(errno.ErrHttpAtoiFail,c)
+	zap.S().Info(FavActionPar)
+	zap.S().Info(currentUser.Id)
+	if FavActionPar.UserId != currentUser.Id{
+		SendHttpResponse(errno.ErrHttpTokenInvalid,c)
 		return
 	}
-	userId,err := strconv.Atoi(user_id)
-	if err != nil{
-		SendHttpResponse(errno.ErrHttpAtoiFail,c)
+	if FavActionPar.ActionType != 1 && FavActionPar.ActionType != 2{
+		SendHttpResponse(errno.ErrHttpInvalidValue,c)
 		return
 	}
-
-	FavActionPar.Token = token
-	FavActionPar.VideoId = int64(video)
-	FavActionPar.ActionType = int32(action)
-	FavActionPar.UserId = int64(userId)
 
 	//配置熔断限流。
 	sen,b  := sentinel.Entry("favorite_action",sentinel.WithTrafficType(base.Inbound))
@@ -61,7 +54,6 @@ func FavoriteAction(c *gin.Context)  {
 		VideoId: FavActionPar.VideoId,
 		ActionType: FavActionPar.ActionType,
 		UserId: FavActionPar.UserId,
-		Token: token,
 		})
 	if err != nil{
 		SendHttpResponse(errno.ErrHttpRPCfail,c)

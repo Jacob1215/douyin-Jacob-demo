@@ -3,42 +3,46 @@ package handlers
 import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/relation_api/global"
+	"douyin-Jacob/pkg/errno"
+	"douyin-Jacob/pkg/jwt/models"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 	"net/http"
-	"strconv"
 )
 
 // 关注操作 handler 输入参数
 type RelationActionParam struct {
-	UserId     int64  `json:"user_id,omitempty"`     // 用户id
-	Token      string `json:"token,omitempty"`       // 用户鉴权token
-	ToUserId   int64  `json:"to_user_id,omitempty"`  // 对方用户id
-	ActionType int32  `json:"action_type,omitempty"` // 1-关注，2-取消关注
+	UserId     int64  `form:"user_id" json:"user_id,omitempty" binding:"required"`     // 用户id
+	Token      string `form:"user_id" json:"token,omitempty" `       // 用户鉴权token
+	ToUserId   int64  `form:"user_id" json:"to_user_id,omitempty" binding:"required"`  // 对方用户id
+	ActionType int32  `form:"user_id" json:"action_type,omitempty" binding:"required"` // 1-关注，2-取消关注
 }
 
 func RelationAction(c *gin.Context)  {
 	var relationPara RelationActionParam
-	token := c.Query("token")
-	to_user_id :=c.Query("to_user_id")
-	action_type := c.Query("action_type")
-
-	toUserId,err := strconv.Atoi(to_user_id)
-	if err != nil{
-		SendResponseToHttp(err,c,nil)
+	if err := c.ShouldBind(&relationPara);err != nil{
+		SendHttpResponse(errno.ErrHttpBind,c)
 		return
 	}
-	action ,err :=strconv.Atoi(action_type)
-	if err != nil{
-		SendResponseToHttp(err,c,nil)
+	claims,_ := c.Get("claims")
+	currentUser := claims.(*models.CustomClaims)
+	if currentUser.Id != relationPara.UserId {
+		SendHttpResponse(errno.ErrHttpTokenInvalid,c)
 		return
 	}
-	relationPara.Token = token
-	relationPara.ToUserId = int64(toUserId)
-	relationPara.ActionType = int32(action)
+	if relationPara.ActionType != 1 && relationPara.ActionType != 2{
+		SendHttpResponse(errno.ErrHttpInvalidData,c)
+		return
+	}
+	if relationPara.ToUserId == relationPara.UserId {
+		SendHttpResponse(errno.ErrHttpInvalidData,c)
+		return
+	}
 
+	zap.S().Info(relationPara)
 	//配置熔断限流。
 	e,b  := sentinel.Entry("publish_video",sentinel.WithTrafficType(base.Inbound))
 	if b !=nil{
@@ -51,12 +55,13 @@ func RelationAction(c *gin.Context)  {
 
 	resp,err := global2.RelationSrvClient.DouyinRelationAction(context.WithValue(context.Background(),"ginContext",c),
 		&proto.DouyinRelationActionRequest{
+			UserId: relationPara.UserId,
 			ToUserId: relationPara.ToUserId,
 			Token: relationPara.Token,
 			ActionType: relationPara.ActionType,
 		})
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpRPCfail,c)
 		return
 	}
 	e.Exit()

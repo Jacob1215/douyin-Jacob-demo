@@ -25,7 +25,7 @@ func (s *Comment) DouyinCommentAction(ctx context.Context,req *proto.DouyinComme
 			}
 			//改变com count
 			res :=tx.Model(&db.Video{}).Where("ID = ? ",comment.VideoID).Update("com_count",gorm.Expr("com_count + ? ",1))
-			if err.Error != nil{
+			if res.Error != nil{
 				return errno.ErrUpdateModelErr
 			}
 			if res.RowsAffected  != 1{
@@ -62,15 +62,20 @@ func (s *Comment) DouyinCommentAction(ctx context.Context,req *proto.DouyinComme
 			return nil,err
 		}
 	}
+	statusmsg := "comment action successed"
+	if req.ActionType == 2{
+		statusmsg = "delete comment successd"
+	}
+
 	return &proto.DouyinCommentActionResponse{
 		StatusCode: 0,
-		StatusMsg: "comment action successed",
+		StatusMsg: statusmsg,
 		Comment: &proto.Comment{
 			Id: req.CommentId,
 			User: &proto.User{
 				Id: req.UserId,
 			},
-			//CreateDate: req.,//TODO
+			CreateDate: comment.CreatedAt.Format("01-02"),
 			Content: req.CommentText,
 		},
 	},nil

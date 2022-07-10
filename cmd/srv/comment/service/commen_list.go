@@ -10,9 +10,12 @@ import (
 
 func (s *Comment)DouyinCommentList(ctx context.Context,req *proto.DouyinCommentListRequest)(*proto.DouyinCommentListResponse,error){
 	comments := []*db.Comment{}
-	err := global2.DB.WithContext(ctx).Model(&db.Comment{}).Where(&db.Comment{VideoID: req.VideoId}).Find(&comments).Error
-	if err != nil{
+	result := global2.DB.WithContext(ctx).Model(&db.Comment{}).Where(&db.Comment{VideoID: req.VideoId}).Find(&comments)
+	if result.RowsAffected == 0{
 		return nil,errno.ErrVideoNotFound
+	}
+	if result.Error != nil{
+		return nil,errno.ErrFindDate
 	}
 	commentResp := []*proto.Comment{}
 	for _,comment := range comments{
@@ -29,9 +32,13 @@ func (s *Comment)DouyinCommentList(ctx context.Context,req *proto.DouyinCommentL
 			CreateDate: comment.CreatedAt.Format("01-02"),
 		})
 	}
+	statusmsg := "get video comments successed"
+	if len(comments) == 0{
+		statusmsg = "video has no comments"
+	}
 	return &proto.DouyinCommentListResponse{
 		StatusCode: 0,
-		StatusMsg: "get video comments successed",
+		StatusMsg: statusmsg,
 		CommentList: commentResp,
 	},nil
 }

@@ -31,8 +31,7 @@ func InitComRouter(Router *gin.RouterGroup)  {//注册用户相关的路由
 	{
 		ComRouter.POST("/action",middlewares.JWTAuth(global2.ServerConfig.JWTInfo.SigningKey),
 			handlers2.CommentAction) //先验证,再给Info
-		ComRouter.GET("/list",middlewares.JWTAuth(global2.ServerConfig.JWTInfo.SigningKey),
-			handlers2.CommentList)
+		ComRouter.GET("/list", handlers2.CommentList)
 	}
 
 }
