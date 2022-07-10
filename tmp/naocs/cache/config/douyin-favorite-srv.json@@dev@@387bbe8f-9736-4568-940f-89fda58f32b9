@@ -1,6 +1,6 @@
 {
   "name": "favorite-srv",
-  "host": "192.168.1.105",
+  "host": "192.168.1.110",
   "tags":["douyin","jacob","favorite","srv"],
   "mysql": {
     "host": "192.168.1.101",

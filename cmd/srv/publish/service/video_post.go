@@ -65,14 +65,14 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 	if err != nil{
 		return nil, err
 	}
-	cover := strings.Split(string(coverUrl),"?")[0]
+	CoverUrl := strings.Split(string(coverUrl),"?")[0]
 	//封装
 
 
 	videoModel := &db.Video{
 		AuthorID: request.User.Id,
 		PlayUrl: playUrl,
-		CoverUrl: cover,
+		CoverUrl: CoverUrl,
 		FavCount: 0,
 		ComCount: 0,
 		Title: request.Title,

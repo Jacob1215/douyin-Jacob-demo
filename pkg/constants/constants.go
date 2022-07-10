@@ -11,10 +11,10 @@ const (
 	FavoriteSrvConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/srv/favorite/douyin-debug.yaml"
 	FavoriteApiConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/api/favorite_api/douyin-debug.yaml"
 	CommentSrvConfigFileName ="D:/gopath/src/douyin-Jacob/cmd/srv/comment/douyin-debug.yaml"
-	CommentApiConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/api/comment_api/douyin-debug.yaml"
+
+CommentApiConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/api/comment_api/douyin-debug.yaml"
 	RelationSrvConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/srv/relation/douyin-debug.yaml"
 	RelationApiConfigFileName = "D:/gopath/src/douyin-Jacob/cmd/api/relation_api/douyin-debug.yaml"
-
 
 
 

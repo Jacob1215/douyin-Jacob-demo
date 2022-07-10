@@ -10,3 +10,7 @@ type User struct {
 
 	IsFollow bool `gorm:"default:false;not null" json:"is_follow"`
 }
+
+func (User) TableName()string  {
+	return "user"
+}

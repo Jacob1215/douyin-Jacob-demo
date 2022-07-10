@@ -27,9 +27,10 @@ func GetUserVideoList (c *gin.Context)  {
 	userInfo := models.CustomClaims{}
 	userid,_ :=strconv.ParseInt(c.Query("user_id"),10,64)
 	token := c.Query("token")
+
 	zap.S().Info(userInfo.Id,userInfo.AuthorityId)
 	//配置熔断限流。
-	e,b  := sentinel.Entry("publish_video",sentinel.WithTrafficType(base.Inbound))
+	e,b  := sentinel.Entry("publish_video_list",sentinel.WithTrafficType(base.Inbound))
 	if b !=nil{
 		c.JSON(http.StatusTooManyRequests,gin.H{
 			"status_code":429,
