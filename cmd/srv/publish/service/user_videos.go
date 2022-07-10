@@ -4,6 +4,7 @@ import (
 	"context"
 	global2 "douyin-Jacob/cmd/srv/publish/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
 	"github.com/opentracing/opentracing-go"
 
@@ -20,13 +21,13 @@ func (s *PublishServer) UserVideoList(ctx context.Context,req *proto.DouyinPubli
 	userVideoListSpan := opentracing.GlobalTracer().StartSpan("User_video_list",opentracing.ChildOf(parentSpan.Context()))
 	err := global2.DB.WithContext(ctx).Model(&db.Video{}).Where(&db.Video{AuthorID:req.UserId}).Find(&videoList).Error
 	if err != nil{
-		return nil,err
+		return nil,errno.ErrVideoNotFound
 	}
 	userVideoListSpan.Finish()
 
 	vs ,err := Videos(ctx,videoList,&req.UserId)
 	if err != nil{
-		return nil, err
+		return nil, errno.ErrPackVideosErr
 	}
 	return &proto.DouyinPublishListResponse{
 		StatusMsg: "get publish list successed",

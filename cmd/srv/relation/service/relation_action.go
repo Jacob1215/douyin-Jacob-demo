@@ -4,9 +4,8 @@ import (
 	"context"
 	global2 "douyin-Jacob/cmd/srv/relation/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	proto "douyin-Jacob/proto"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 )
 
@@ -17,23 +16,23 @@ func (s *Relation) DouyinRelationAction(ctx context.Context,req *proto.DouyinRel
 			//新增关注数据
 			err := tx.Create(&db.Relation{UserID: req.UserId,ToUserID: req.ToUserId}).Error
 			if err != nil{
-				return err
+				return errno.ErrCreateModelErr
 			}
 			//改变user表中的following count
 			res := tx.Model(new(db.User)).Where("ID = ?",req.UserId).Update("follow_count",gorm.Expr("follow_count + ?",1))
 			if res.Error != nil{
-				return res.Error
+				return errno.ErrUpdateModelErr
 			}
 			if res.RowsAffected != 1{
-				return status.Errorf(codes.DataLoss,"cannot update user follow relation")
+				return errno.ErrRowsAffectedNotEquelToOne
 			}
 			//改变user表中的followercount？
 			res = tx.Model(new(db.User)).Where("ID = ?",req.ToUserId).Update("follower_count",gorm.Expr("follower_count + ?",1))
 			if res.Error != nil{
-				return res.Error
+				return errno.ErrUpdateModelErr
 			}
 			if res.RowsAffected != 1{
-				return status.Errorf(codes.DataLoss,"cannot update user follower relation")
+				return errno.ErrRowsAffectedNotEquelToOne
 			}
 			return nil
 		})
@@ -51,23 +50,23 @@ func (s *Relation) DouyinRelationAction(ctx context.Context,req *proto.DouyinRel
 			}
 			err := tx.Unscoped().Delete(&relation).Error
 			if err != nil{
-				return err
+				return errno.ErrDeleteDate
 			}
 			//改变user表中的following count
 			res := tx.Model(new(db.User)).Where("ID = ?",req.UserId).Update("follow_count",gorm.Expr("follow_count - ?",1))
 			if res.Error != nil{
-				return res.Error
+				return errno.ErrUpdateModelErr
 			}
 			if res.RowsAffected != 1{
-				return status.Errorf(codes.DataLoss,"delete user follow failed")
+				return errno.ErrRowsAffectedNotEquelToOne
 			}
 			//改变被关注者的数据
 			res = tx.Model(new(db.User)).Where("ID = ?",req.ToUserId).Update("follower_count",gorm.Expr("follower_count - ?",1))
 			if res.Error != nil{
-				return res.Error
+				return errno.ErrUpdateModelErr
 			}
 			if res.RowsAffected != 1{
-				return status.Errorf(codes.DataLoss,"delete user follower failed")
+				return errno.ErrRowsAffectedNotEquelToOne
 			}
 			return nil
 		})

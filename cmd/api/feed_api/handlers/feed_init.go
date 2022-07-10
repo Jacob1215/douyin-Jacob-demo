@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/feed_api/global"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -26,7 +27,7 @@ func DouyinFeed(c *gin.Context) {
 	var latestTime int64
 	if len(feedReq.LatestTime) != 0{
 		if latest,err := strconv.Atoi(feedReq.LatestTime);err != nil{
-			SendResponseToHttp(err,c,nil)
+			SendHttpResponse(errno.ErrHttpInvalidValue,c)
 			return
 		}else {
 			latestTime = int64(latest)
@@ -48,7 +49,7 @@ func DouyinFeed(c *gin.Context) {
 		Token: feedReq.Token,
 	})
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpRPCfail,c)
 		return
 	}
 	sen.Exit()

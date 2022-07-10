@@ -1,19 +1,16 @@
 package service
 
 import (
+	"context"
 	"crypto/sha512"
 	global2 "douyin-Jacob/cmd/srv/user/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
-	"github.com/opentracing/opentracing-go"
-
-	"github.com/anaskhan96/go-password-encoder"
-	"go.uber.org/zap"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
-	"context"
 	"fmt"
+	"github.com/anaskhan96/go-password-encoder"
+	"github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
 )
 
 //通过Name注册。
@@ -24,9 +21,11 @@ func (s *UserServer)UserRegister(ctx context.Context,req *proto.DouyinUserRegist
 	userRegisterSpan := opentracing.GlobalTracer().StartSpan("user_register",opentracing.ChildOf(parentSpan.Context()))
 	result := global2.DB.Where(&db.User{UserName: req.Username}).First(&user)
 	if result.RowsAffected == 1{
-		return nil,status.Errorf(codes.AlreadyExists,"用户已存在")
+		return nil,errno.ErrUserAlreadyExist
 	}
-
+	if result.Error !=nil{
+		return nil,errno.ErrDatabase
+	}
 	user.UserName = req.Username
 	user.FollowCount = 0
 	user.FollowerCount = 0
@@ -39,9 +38,7 @@ func (s *UserServer)UserRegister(ctx context.Context,req *proto.DouyinUserRegist
 
 	userRegisterSpan.Finish()
 
-	if result.Error !=nil{
-		return nil,status.Errorf(codes.Internal,result.Error.Error())
-	}
+
 	userInfo := &proto.DouyinUserRegisterResponse{
 		StatusCode: 0,
 		StatusMsg: "注册成功",

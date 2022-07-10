@@ -4,9 +4,8 @@ import (
 	"context"
 	"douyin-Jacob/cmd/srv/publish/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 type PublishServer struct {
@@ -14,7 +13,7 @@ type PublishServer struct {
 
 func Video(ctx context.Context,video *db.Video,fromID int64)(*proto.Video,error)  {
 	if video == nil{
-		return nil,nil
+		return nil,errno.ErrVideoNotFound
 	}
 	//查询User是谁？
 	user := new(db.User)
@@ -23,13 +22,13 @@ func Video(ctx context.Context,video *db.Video,fromID int64)(*proto.Video,error)
 	}
 	//打包User信息
 	if user == nil{
-		return nil,status.Errorf(codes.NotFound,"pack User infor failed")
+		return nil,errno.ErrUserNotFound
 	}
 	//查询用户favorite关系
 	isFollow :=false
 	relation := new(db.Relation)
 	if err := global.DB.WithContext(ctx).First(&relation,"user_id = ? and to_user_id = ?",fromID,user.ID).Error; err != nil{
-		return nil,status.Errorf(codes.DataLoss,"pack user relation failed")
+		return nil,errno.ErrFavRelationFailed
 	}
 	if relation != nil{
 		isFollow = true
@@ -67,11 +66,11 @@ func Videos(ctx context.Context,videos []*db.Video,fromID *int64)([]*proto.Video
 			if *fromID != 0 {
 				userInfo := new(db.User)
 				if err = global.DB.WithContext(ctx).First(userInfo, fromID).Error; err != nil {
-					return nil, status.Errorf(codes.DataLoss, "cannot find the videos User")
+					return nil, errno.ErrUserNotFound
 				}
 				videoInfo := new(db.Video)
 				if err = global.DB.WithContext(ctx).Model(&userInfo).Association("FavoriteVideos").Find(&videoInfo, video.Id); err != nil {
-					return nil, status.Errorf(codes.DataLoss, "cannot find the videos favCount")
+					return nil, errno.ErrVideoNotFound
 				}
 				if videoInfo != nil && videoInfo.AuthorID != 0 {
 					flag = true

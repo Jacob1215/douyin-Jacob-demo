@@ -34,6 +34,12 @@ var (
 	ErrInvalidValue          = NewErrNo(20216, "Invalid value")
 	ErrInvalidValueOfLength  = NewErrNo(20217, "Invalid values do not match length")
 	ErrPreloadNotAllowed     = NewErrNo(20218, "Preload is not allowed when count is used")
+	ErrCreateModelErr =NewErrNo(20219,"Create data err")
+	ErrUpdateModelErr = NewErrNo(20220,"Update date model error")
+	ErrRowsAffectedNotEquelToOne = NewErrNo(20221,"Update user rowsAffected is not 1")
+	ErrDeleteDate = NewErrNo(20222,"Delete Info failed")
+	ErrFindDate = NewErrNo(20223,"Find date info err")
+	ErrFirstDate = NewErrNo(20224,"First date info error")
 	//userPassword Error: start from 201xx
 	ErrEncrypt           = NewErrNo(20101, "Error occurred while encrypting the user password")
 	ErrSignatureInvalid  = NewErrNo(20102, "Signature is invalid")
@@ -60,7 +66,12 @@ var (
 	ErrVideoNotFound       = NewErrNo(20405, "Video not found")
 	ErrInvalidHash         = NewErrNo(20406, "Encoded hash is not in the correct format")
 	ErrIncompatibleVersion = NewErrNo(20407, "Encoded hash is not in the correct format")
-)
+	//Relation业务
+	ErrFavRelationFailed = NewErrNo(20501, "Favorite relation not found")
+	//视频业务
+	ErrPackVideosErr = NewErrNo(20601,"Pack user video list error")
+	ErrOrderVideoTimeLine = NewErrNo(20602,"Order video time line error")
+	)
 
 //Http error
 var (
@@ -111,5 +122,9 @@ var (
 	ErrHttpVideoNotFound         = NewHttpErr(30044, 400, "Video not found")
 	ErrHttpInvalidHash           = NewHttpErr(30045, 500, "Encoded hash is not in the correct format")
 	ErrHttpIncompatibleVersion   = NewHttpErr(30046, 500, "Encoded hash is not in the correct format")
-)
+	ErrHttpAtoiFail  = NewHttpErr(30047,400,"Func strconv.Atoi error")
+	ErrHttpRPCfail =NewHttpErr(30048,500,"RPC error")
+
+
+	)
 

@@ -3,6 +3,7 @@ package service
 import (
 	global2 "douyin-Jacob/cmd/srv/user/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/pkg/oss"
 
 	"douyin-Jacob/proto"
@@ -84,12 +85,12 @@ func (s *PublishServer) PostVideo(ctx context.Context,request *proto.DouyinPubli
 	err = global2.DB.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		err := tx.Create(videoModel).Error
 		if err  != nil {
-			return err
+			return errno.ErrCreateModelErr
 		}
 		return nil
 	})
 	if err != nil{
-		return nil,err
+		return nil, errno.ErrInvalidTransaction
 	}
 	postVideoSpan.Finish()
 	return &proto.DouyinPublishActionResponse{

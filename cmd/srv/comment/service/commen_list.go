@@ -4,6 +4,7 @@ import (
 	"context"
 	global2 "douyin-Jacob/cmd/srv/comment/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	proto "douyin-Jacob/proto"
 )
 
@@ -11,7 +12,7 @@ func (s *Comment)DouyinCommentList(ctx context.Context,req *proto.DouyinCommentL
 	comments := []*db.Comment{}
 	err := global2.DB.WithContext(ctx).Model(&db.Comment{}).Where(&db.Comment{VideoID: req.VideoId}).Find(&comments).Error
 	if err != nil{
-		return nil,err
+		return nil,errno.ErrVideoNotFound
 	}
 	commentResp := []*proto.Comment{}
 	for _,comment := range comments{

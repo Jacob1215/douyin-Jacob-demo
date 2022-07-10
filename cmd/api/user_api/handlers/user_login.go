@@ -2,6 +2,7 @@ package handlers
 
 import (
 	global2 "douyin-Jacob/cmd/api/user_api/global"
+	"douyin-Jacob/pkg/errno"
 	middlewares "douyin-Jacob/pkg/jwt"
 	"douyin-Jacob/pkg/jwt/models"
 	"douyin-Jacob/proto"
@@ -46,25 +47,26 @@ func Login(c *gin.Context)  {
 		if e, ok := status.FromError(err); ok {
 			switch e.Code() {
 			case codes.NotFound:
-				SendResponseToHttp(err,c,nil)
+				SendHttpResponse(errno.ErrHttpUserNotFound,c)
 			default:
-				SendResponseToHttp(err,c,nil)
+				SendHttpResponse(errno.ErrHttpRPCfail,c)
 			}
 			return
 		}
 	} else {
-		//查询了用户存不存在，现在去验证密码
+		//查询了用户存存在，现在去验证密码
 		if passRsp,passErr := global2.UserSrvClient.UserLoginByName(context.WithValue(context.Background(),"ginContext",c),&proto.DouyinUserLoginRequest{
 			Password: passwordLoginForm.PassWord,
 			EncryptedPassword: userRsp.User.Password,
 		}); passErr != nil {
-			SendResponseToHttp(err,c,nil)
+			SendHttpResponse(errno.ErrHttpPasswordIncorrect,c)
+			return
 		} else  {
 			if passRsp.StatusCode == 0 {
 				//生成token
 				j := middlewares.NewJWT(global2.ServerConfig.JWTInfo.SigningKey)
 				claims := models.CustomClaims{
-					ID: uint(userRsp.User.Id),
+					Id: userRsp.User.Id,
 					StandardClaims:jwt.StandardClaims{
 						NotBefore: time.Now().Unix(),               //签名的生效时间
 						ExpiresAt: time.Now().Unix() + 60*60*24*30, //30天过期
@@ -73,7 +75,7 @@ func Login(c *gin.Context)  {
 				}
 				token, err := j.CreateToken(claims)
 				if err != nil {
-					SendResponseToHttp(err,c,nil)
+					SendHttpResponse(errno.ErrHttpTokenInvalid,c)
 					return
 				}
 				c.JSON(http.StatusOK, &proto.DouyinUserLoginResponse{
@@ -82,8 +84,6 @@ func Login(c *gin.Context)  {
 					UserId: userRsp.User.Id,
 					Token: token,
 				})
-			} else {
-				SendResponseToHttp(err,c, nil)
 			}
 		}
 	}

@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/favorite_api/global"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -26,17 +27,17 @@ func FavoriteAction(c *gin.Context)  {
 
 	video,err := strconv.Atoi(video_id)
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpAtoiFail,c)
 		return
 	}
 	action,err := strconv.Atoi(action_type)
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpAtoiFail,c)
 		return
 	}
 	userId,err := strconv.Atoi(user_id)
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpAtoiFail,c)
 		return
 	}
 
@@ -63,7 +64,7 @@ func FavoriteAction(c *gin.Context)  {
 		Token: token,
 		})
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpRPCfail,c)
 		return
 	}
 	sen.Exit()

@@ -4,6 +4,7 @@ import (
 	"context"
 	global2 "douyin-Jacob/cmd/srv/relation/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	proto "douyin-Jacob/proto"
 )
 
@@ -11,13 +12,13 @@ func (s *Relation)DouyinRelationFollow(ctx context.Context, req *proto.DouyinRel
 	followUserList := []*db.Relation{}
 	err := global2.DB.WithContext(ctx).Where("user_id = ?",req.UserId).Find(&followUserList).Error
 	if err != nil{
-		return nil, err
+		return nil,errno.ErrFindDate
 	}
 	followUser := []*db.User{}
 	for _,user := range followUserList{
 		var user2 *db.User
 		if  err = global2.DB.WithContext(ctx).First(&user2,user.ID).Error;err != nil{
-			return nil,err
+			return nil,errno.ErrFindDate
 		}
 		followUser =append(followUser,user2)
 	}

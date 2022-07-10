@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/comment_api/global"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -28,12 +29,12 @@ func CommentAction(c *gin.Context)  {
 	action_type := c.Query("action_type")
 	video,err := strconv.Atoi(video_id)
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpVideoNotFound,c)
 		return
 	}
 	action,err := strconv.Atoi(action_type)
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpAtoiFail,c)
 		return
 	}
 	CommentPara.Token = token
@@ -46,7 +47,7 @@ func CommentAction(c *gin.Context)  {
 		comment_id := c.Query("comment_id")
 		com_id,err := strconv.Atoi(comment_id)
 		if err != nil{
-			SendResponseToHttp(err,c,nil)
+			SendHttpResponse(errno.ErrHttpAtoiFail,c)
 			return
 		}
 		cid64 := int64(com_id)
@@ -72,7 +73,7 @@ func CommentAction(c *gin.Context)  {
 			CommentText: *CommentPara.CommentText,
 		})
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpRPCfail,c)
 		return
 	}
 	sen.Exit()

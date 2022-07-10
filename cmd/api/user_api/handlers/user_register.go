@@ -2,6 +2,7 @@ package handlers
 
 import (
 	global2 "douyin-Jacob/cmd/api/user_api/global"
+	"douyin-Jacob/pkg/errno"
 	middlewares "douyin-Jacob/pkg/jwt"
 	"douyin-Jacob/pkg/jwt/models"
 	"douyin-Jacob/proto"
@@ -28,7 +29,6 @@ func Register(c *gin.Context)  {
 		HandleValidatorError(c,err)
 	}
 	zap.S().Infof("%s",registerForm.UserName)
-	//TODO 要用验证码吗？
 	//生成grpc的client接口并调用
 	if len(registerForm.PassWord) < 6{ //这个地方还要改，它不是grpc的错误。
 		c.JSON(http.StatusBadRequest,&proto.DouyinUserRegisterResponse{
@@ -53,14 +53,14 @@ func Register(c *gin.Context)  {
 	})
 	if err !=nil{
 		zap.S().Errorf("failed to register:%s",err.Error())
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpRegistered,c)
 		return
 	}
 	e.Exit()
 	//去拿token和验证token
 	j := middlewares.NewJWT(global2.ServerConfig.JWTInfo.SigningKey)
 	cliams := models.CustomClaims{
-		ID: uint(user.UserId),
+		Id: user.UserId,
 		StandardClaims:jwt.StandardClaims{
 			NotBefore: time.Now().Unix(),	//签名的生效时间
 			ExpiresAt: time.Now().Unix()+60*60*24*180, // 30天过期
@@ -69,7 +69,7 @@ func Register(c *gin.Context)  {
 	}
 	token,err := j.CreateToken(cliams)
 	if err !=nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpTokenInvalid,c)
 		return
 	}
 	c.JSON(http.StatusOK,&proto.DouyinUserRegisterResponse{

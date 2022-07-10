@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/comment_api/global"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -20,13 +21,13 @@ func CommentList(c *gin.Context)  {
 	var comListPara CommentListParam
 	video_id,err := strconv.Atoi(c.Query("video_id"))
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpAtoiFail,c)
 		return
 	}
 	comListPara.VideoId = int64(video_id)
 	comListPara.Token = c.Query("token")
 	if len(comListPara.Token) == 0 || comListPara.VideoId < 0 {
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpTokenInvalid,c)
 		return
 	}
 	//配置熔断限流。
@@ -46,11 +47,9 @@ func CommentList(c *gin.Context)  {
 			VideoId: comListPara.VideoId,
 		})
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpRPCfail,c)
 		return
 	}
 	sen.Exit()
 	c.JSON(http.StatusOK,resp)
-
-
 }

@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/favorite_api/global"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
 	"github.com/alibaba/sentinel-golang/core/base"
@@ -22,7 +23,7 @@ func FavoriteList(c *gin.Context)  {
 	user_id := c.Query("user_id")
 	userId,err := strconv.Atoi(user_id)
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpAtoiFail,c)
 		return
 	}
 	paramVar.UserId = int64(userId)
@@ -43,7 +44,7 @@ func FavoriteList(c *gin.Context)  {
 			Token: paramVar.Token,
 		})
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpRPCfail,c)
 		return
 	}
 	sen.Exit()

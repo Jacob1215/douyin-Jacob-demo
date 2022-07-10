@@ -4,13 +4,11 @@ import (
 	"context"
 	global2 "douyin-Jacob/cmd/srv/feed/global"
 	"douyin-Jacob/pkg/constants"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/proto"
 	"time"
 
 	"douyin-Jacob/dal/db"
-
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 )
 
 
@@ -26,10 +24,10 @@ func (s *FeedSrvServer) DouyinFeed(ctx context.Context,request *proto.DouyinFeed
 	//TODO 这个时间是怎么处理的。
 	res := global2.DB.Limit(constants.Limit).Order("update_time desc").Find(&videoFeed, "update_time < ?", time.UnixMilli(*latestTime))
 	if res.RowsAffected == 0 {
-		return nil, status.Errorf(codes.NotFound, "Video feed not exist")
+		return nil, errno.ErrVideoNotFound
 	}
 	if res.Error != nil {
-		return nil, res.Error
+		return nil, errno.ErrOrderVideoTimeLine
 	}
 
 	//去查找视频的User

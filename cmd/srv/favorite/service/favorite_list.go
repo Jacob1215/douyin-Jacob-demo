@@ -4,6 +4,7 @@ import (
 	"context"
 	global2 "douyin-Jacob/cmd/srv/favorite/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	proto "douyin-Jacob/proto"
 )
 
@@ -13,7 +14,7 @@ func (s *Favorite)DouyinFavoriteList(ctx context.Context,req *proto.DouyinFavori
 
 	user := new(db.User)
 	if err := global2.DB.WithContext(ctx).First(user,req.UserId).Error;err != nil{
-		return nil,err
+		return nil,errno.ErrUserNotFound
 	}
 	videos := []db.Video{}
 	if err := global2.DB.WithContext(ctx).Model(&user).Association("FavoriteVideo").Find(&videos);err != nil{

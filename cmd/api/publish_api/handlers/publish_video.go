@@ -2,7 +2,7 @@ package handlers
 
 import (
 	global2 "douyin-Jacob/cmd/api/publish_api/global"
-
+	"douyin-Jacob/pkg/errno"
 
 	"douyin-Jacob/proto"
 
@@ -23,18 +23,19 @@ func PublishVideo(c *gin.Context)  {
 	token := c.PostForm("token")
 	claims,err := Jwt.ParseToken(token)
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpTokenInvalid,c)
+		return
 	}
 
 	data,_,err := c.Request.FormFile("data")
 	if err != nil{
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpInvalidData,c)
 		return
 	}
 	defer data.Close()
 	buf := bytes.NewBuffer(nil)
 	if _, err := io.Copy(buf, data); err != nil {
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpInvalidData,c)
 		return
 	}
 
@@ -60,7 +61,8 @@ func PublishVideo(c *gin.Context)  {
 	})
 	if err !=nil{
 		zap.S().Errorf("failed to publishVideo:%s",err.Error())
-		SendResponseToHttp(err,c,nil)
+		SendHttpResponse(errno.ErrHttpRPCfail,c)
+		return
 	}
 	e.Exit()//管的事以上到限流那块儿的逻辑。
 

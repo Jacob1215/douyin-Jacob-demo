@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	global2 "douyin-Jacob/cmd/api/publish_api/global"
+	"douyin-Jacob/pkg/errno"
 	"douyin-Jacob/pkg/jwt/models"
 	"douyin-Jacob/proto"
 	sentinel "github.com/alibaba/sentinel-golang/api"
@@ -46,9 +47,9 @@ func GetUserVideoList (c *gin.Context)  {
 		if e, ok := status.FromError(err); ok {
 			switch e.Code() {
 			case codes.NotFound:
-				SendResponseToHttp(err,c,nil)
+				SendHttpResponse(errno.ErrHttpUserNotFound,c)
 			default:
-				SendResponseToHttp(err,c,nil)
+				SendHttpResponse(errno.ErrHttpRPCfail,c)
 			}
 			return
 		}

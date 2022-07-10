@@ -4,14 +4,12 @@ import (
 	"context"
 	global2 "douyin-Jacob/cmd/srv/comment/global"
 	"douyin-Jacob/dal/db"
+	"douyin-Jacob/pkg/errno"
 	proto "douyin-Jacob/proto"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 )
 
 func (s *Comment) DouyinCommentAction(ctx context.Context,req *proto.DouyinCommentActionRequest) (*proto.DouyinCommentActionResponse,error) {
-	//TODO
 	comment := &db.Comment{
 		UserID: req.UserId,
 		VideoID: req.VideoId,
@@ -23,15 +21,15 @@ func (s *Comment) DouyinCommentAction(ctx context.Context,req *proto.DouyinComme
 			//新增评论数据
 			err := tx.Create(comment).Error
 			if err != nil{
-				return err
+				return errno.ErrCreateModelErr
 			}
 			//改变com count
 			res :=tx.Model(&db.Video{}).Where("ID = ? ",comment.VideoID).Update("com_count",gorm.Expr("com_count + ? ",1))
 			if err.Error != nil{
-				return res.Error
+				return errno.ErrUpdateModelErr
 			}
 			if res.RowsAffected  != 1{
-				return status.Errorf(codes.DataLoss,"cannot update video comment count")
+				return errno.ErrRowsAffectedNotEquelToOne
 			}
 			return nil
 		})
@@ -48,15 +46,15 @@ func (s *Comment) DouyinCommentAction(ctx context.Context,req *proto.DouyinComme
 			//删除评论
 			err := tx.Unscoped().Delete(&comment).Error
 			if err != nil{
-				return err
+				return errno.ErrDeleteDate
 			}
 			//改变video中com count
 			res := tx.Model(&db.Video{}).Where("ID = ?",comment.VideoID).Update("com_count",gorm.Expr("com_count - ?",1))
 			if res.Error != nil{
-				return res.Error
+				return errno.ErrUpdateModelErr
 			}
 			if res.RowsAffected != 1 {
-				return status.Errorf(codes.DataLoss,"cannot update video comment count")
+				return errno.ErrRowsAffectedNotEquelToOne
 			}
 			return nil
 		})
